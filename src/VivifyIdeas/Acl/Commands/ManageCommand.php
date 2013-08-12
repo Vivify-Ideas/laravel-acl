@@ -6,14 +6,8 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-use Illuminate\Database\Schema\Blueprint;
-use Schema;
-
-use VivifyIdeas\Acl\Manager;
-use VivifyIdeas\Acl\PermissionProviders\EloquentProvider;
-
 /**
- * Custom Artisan command for installing ACL DB structure.
+ * Custom Artisan command for managing ACL permissions.
  */
 class ManageCommand extends Command
 {
@@ -51,9 +45,7 @@ class ManageCommand extends Command
 	 */
 	public function fire()
 	{
-		$manager = new Manager(new EloquentProvider);
-
-		die(var_dump($manager->reloadPermissions()));
+		\AclManager::reloadPermissions();
 
 		$this->info('ACL permissions successful inserted!');
 	}
