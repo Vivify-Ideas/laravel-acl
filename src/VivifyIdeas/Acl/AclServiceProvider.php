@@ -51,11 +51,7 @@ class AclServiceProvider extends ServiceProvider {
 
 	private function getProviderClass()
 	{
-
-		if (($provider = Config::get('acl::provider')) === null) {
-			$provider = 'test';
-		}
-
+		$provider = Config::get('acl::provider');
 		return 'VivifyIdeas\Acl\PermissionProviders\\' . ucfirst($provider) . 'Provider';
 	}
 
