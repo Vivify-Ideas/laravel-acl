@@ -45,20 +45,66 @@ abstract class PermissionsProviderAbstract
      */
     public abstract function getAllPermissions();
 
+    /**
+     * Delete all system wide permissions
+     */
     public abstract function deleteAllPermissions();
 
+    /**
+     * Delete all user permissions
+     */
     public abstract function deleteAllUsersPermissions();
 
+    /**
+     * Crate new system permission
+     *
+     * @param string $id
+     * @param bool $allowed
+     * @param string|array $route
+     * @param bool $resourceIdRequired
+     *
+     * @return array
+     */
     public abstract function createPermission($id, $allowed, $route, $resourceIdRequired);
 
+    /**
+     * Remove permission by ID
+     *
+     * @param string $id
+     */
     public abstract function removePermission($id);
 
+    /**
+     * Assign permission to the user with specfic options
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     * @param boolean $allowed
+     * @param array $allowedIds
+     * @param array $excludedIds
+     */
     public abstract function assignPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     );
 
+    /**
+     * Remove specific user permission.
+     * If $userId can be null.
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     */
     public abstract function removeUserPermission($userId, $permissionId);
 
+    /**
+     * Update specific user permission
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     * @param bool $allowed
+     * @param array $allowedIds
+     * @param array $excludedIds
+     */
     public abstract function updateUserPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     );

@@ -63,6 +63,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         return $permissions;
     }
 
+    /**
+     * @see parent description
+     */
     public function createPermission($id, $allowed, $route, $resourceIdRequired)
     {
         return Permission::create(array(
@@ -73,11 +76,17 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         ))->toArray();
     }
 
+    /**
+     * @see parent description
+     */
     public function removePermission($id)
     {
         return Permission::destroy($id);
     }
 
+    /**
+     * @see parent description
+     */
     public function assignPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
@@ -90,6 +99,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         ))->toArray();
     }
 
+    /**
+     * @see parent description
+     */
     public function removeUserPermission($userId, $permissionId)
     {
         $q = UserPermission::where('permission_id', '=', $permissionId);
@@ -101,6 +113,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         return $q->delete();
     }
 
+    /**
+     * @see parent description
+     */
     public function updateUserPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
@@ -113,11 +128,17 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                             ));
     }
 
+    /**
+     * @see parent description
+     */
     public function deleteAllPermissions()
     {
         return Permission::truncate();
     }
 
+    /**
+     * @see parent description
+     */
     public function deleteAllUsersPermissions()
     {
         return UserPermission::truncate();
