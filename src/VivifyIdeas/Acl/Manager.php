@@ -19,13 +19,13 @@ class Manager
     public function reloadPermissions($onlySystemPermissions = false)
     {
         $permissions = Config::get('acl::permissions');
+        $forDelete = array();
 
         if ($onlySystemPermissions) {
             // delete not existing permissions from users_permissions
 
             // get old permissions
             $old = $this->provider->getAllPermissions();
-            $forDelete = array();
             foreach ($old as $oldPermission) {
                 $exist = false;
                 foreach ($permissions as $newPermissions) {
