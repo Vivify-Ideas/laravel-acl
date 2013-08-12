@@ -63,3 +63,35 @@ When you are satisfy how your permissions look like, run next artisan command:
 ```
 php artisan acl:manage reload-permissions
 ```
+
+### Checking permissions
+
+Here are few ways how to check user permissions:
+
+```php
+// Whether a user with ID 2 can see a list of all products
+Acl::user(2)->permission('LIST_PRODUCTS')->check();
+
+// Whether a user with ID 1 can edit product with ID 2
+Acl::user(1)->permission('EDIT_PRODUCT', 2)->check();
+
+// Can currently authenticated user edit product with ID 2
+Acl::permission('EDIT_PRODUCT', 2)->check();
+
+// Whether a user with ID 1 can edit and delete product with ID 2
+Acl::user(1)->permission('EDIT_PRODUCT', 2)
+            ->permission('DELETE_PRODUCT', 2)
+            ->check();
+
+// Can user with ID 1 access /products URL
+Acl::user(1)->checkRoute('GET', '/products')
+
+// Can currently authenticated user access /products URL
+Acl::checkRoute('GET', '/products');
+
+// Get me array of product IDs that user with ID 1 can edit
+Acl::user(1)->permission('EDIT_PRODUCT')->getResourceIds();
+
+// Get me array of product IDs that user with ID 1 can not edit
+Acl::user(1)->permission('EDIT_PRODUCT')->getResourceIds(false);
+```
