@@ -48,13 +48,7 @@ php artisan acl:install
 
 This will use current permission provider (`Eloquent`) and create DB structure for saving permissions. It will create 2 additional tables `acl_permissions` and `acl_user_permissions`.
 
-Next step is to fill available permission for your application. You can do this by overwriting ACL default config file.
-
-Copy config file to config packages dir (so you can configure component):
-
-```
-php artisan config:publish --path="vendor/vivify-ideas/acl/src/config" vivify-ideas/acl
-```
+Next step is to fill available permission for your application. You can do this by overwriting ACL default config file (`app/config/packages/vivify-ideas/acl/config.php`).
 
 In the config file there is `permissions` section that you need to put all permissions that exist in your system in `permissions` section.
 

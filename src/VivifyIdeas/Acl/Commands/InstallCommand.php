@@ -48,7 +48,10 @@ class InstallCommand extends Command
 	 */
 	public function fire()
 	{
+
 		if ($this->argument('clean')) {
+			$this->createConfig();
+
 			// remove tables if clean attr exist
 			if (Schema::hasTable('acl_permissions')) {
 				Schema::drop('acl_permissions');
@@ -57,6 +60,8 @@ class InstallCommand extends Command
 			if (Schema::hasTable('acl_users_permissions')) {
 				Schema::drop('acl_users_permissions');
 			}
+		} elseif (!file_exists(app_path() . '/config/packages/vivify-ideas/acl/config.php')) {
+			$this->createConfig();
 		}
 
 		if (Schema::hasTable('acl_permissions') && Schema::hasTable('acl_users_permissions')) {
@@ -87,5 +92,11 @@ class InstallCommand extends Command
 
 		$this->info('ACL installed successful!');
 	}
+
+	private function createConfig()
+	{
+		return $this->call('config:publish', array('--path' => 'vendor/vivify-ideas/acl/src/config', 'package' => 'vivify-ideas/acl'));
+	}
+
 
 }
