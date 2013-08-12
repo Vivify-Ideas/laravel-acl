@@ -98,7 +98,7 @@ class Checker
 
             // overwrite with user permissions
             foreach ($userPermissions as $userPermission) {
-                if ($userPermission['allowed'] === null) {
+                if (@$userPermission['allowed'] === null) {
                     // allowed is not set, so use from system default
                     unset($userPermission['allowed']);
                 }

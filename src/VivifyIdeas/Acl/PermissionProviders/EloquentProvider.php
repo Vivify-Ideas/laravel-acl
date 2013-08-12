@@ -21,6 +21,8 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             if ($permission['allowed'] === null) {
                 // allowed is not set, so use from system default
                 unset($permission['allowed']);
+            } else {
+                $permission['allowed'] = (bool) $permission['allowed'];
             }
 
             $permission['id'] = $permission['permission_id'];
@@ -53,6 +55,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 // if route is json encoded string
                 $permission['route'] = $routes;
             }
+
+            $permission['allowed'] = (bool) $permission['allowed'];
+            $permission['resource_id_required'] = (bool) $permission['resource_id_required'];
         }
 
         return $permissions;
