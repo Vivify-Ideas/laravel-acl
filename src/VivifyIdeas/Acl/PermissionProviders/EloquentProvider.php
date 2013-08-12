@@ -23,6 +23,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 unset($permission['allowed']);
             }
 
+            $permission['id'] = $permission['permission_id'];
+            unset($permission['permission_id']);
+
             if ($permission['allowed_ids'] !== null) {
                 // create array from string - try to explode by ','
                 $permission['allowed_ids'] = explode(',', $permission['allowed_ids']);
@@ -74,7 +77,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
         return UserPermission::create(array(
-            'id' => $permissionId,
+            'permission_id' => $permissionId,
             'user_id' => $userId,
             'allowed' => $allowed,
             'allowed_ids' => ($allowedIds !== null)? implode(',', $allowedIds) : $allowedIds,
@@ -93,7 +96,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
         return UserPermission::where('user_id', '=', $userId)
-                            ->where('id', '=', $permissionId)
+                            ->where('permission_id', '=', $permissionId)
                             ->update(array(
                                 'allowed' => $allowed,
                                 'allowed_ids' => ($allowedIds !== null)? implode(',', $allowedIds) : $allowedIds,

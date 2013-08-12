@@ -76,7 +76,8 @@ class InstallCommand extends Command
 
 		if (!Schema::hasTable('acl_users_permissions')) {
 			Schema::create('acl_users_permissions', function(Blueprint $table) {
-				$table->string('id')->primary();
+				$table->increments('id');
+				$table->string('permission_id')->index();
 				$table->integer('user_id')->index();
 				$table->boolean('allowed')->nullable()->default(null);
 				$table->string('allowed_ids')->nullable()->default(null);
