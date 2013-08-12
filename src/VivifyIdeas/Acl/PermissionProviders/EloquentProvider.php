@@ -92,9 +92,13 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     public function removeUserPermission($userId, $permissionId)
     {
-        return UserPermission::where('user_id', '=', $userId)
-                            ->where('id', '=', $permissionId)
-                            ->delete();
+        $q = UserPermission::where('permission_id', '=', $permissionId);
+
+        if ($userId !== null) {
+            $q->where('user_id', '=', $userId);
+        }
+
+        return $q->delete();
     }
 
     public function updateUserPermission(

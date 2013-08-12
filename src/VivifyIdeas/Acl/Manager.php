@@ -16,12 +16,40 @@ class Manager
         $this->provider = $provider;
     }
 
-    public function reloadPermissions()
+    public function reloadPermissions($onlySystemPermissions = false)
     {
-        $this->deleteAllPermissions();
-        $this->deleteAllUsersPermissions();
-
         $permissions = Config::get('acl::permissions');
+
+        if ($onlySystemPermissions) {
+            // delete not existing permissions from users_permissions
+
+            // get old permissions
+            $old = $this->provider->getAllPermissions();
+            $forDelete = array();
+            foreach ($old as $oldPermission) {
+                $exist = false;
+                foreach ($permissions as $newPermissions) {
+                    $exist = $newPermissions['id'] == $oldPermission['id'];
+
+                    if ($exist) {
+                        break;
+                    }
+                }
+
+                if (!$exist) {
+                    // delete only user permissions that not exist anymore
+                    $forDelete[] = $oldPermission['id'];
+                }
+            }
+
+            foreach ($forDelete as $id) {
+                $this->removeUserPermission(null, $id);
+            }
+        } else {
+            $this->deleteAllUsersPermissions();
+        }
+
+        $this->deleteAllPermissions();
 
         foreach ($permissions as $permission) {
             $this->createPermission(
@@ -31,6 +59,13 @@ class Manager
                 $permission['resource_id_required']
             );
         }
+
+        return $forDelete;
+    }
+
+    public function updateUserPermissions($permissions)
+    {
+        $this->provider->getUserPermissions();
     }
 
     public function deleteAllPermissions()
@@ -59,7 +94,7 @@ class Manager
         return $this->provider->assignPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
     }
 
-    public function removeUserPermission($userId, $permissionId)
+    public function removeUserPermission($userId = null, $permissionId)
     {
         return $this->provider->removeUserPermission($userId, $permissionId);
     }
