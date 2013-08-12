@@ -37,3 +37,29 @@ That's it! You're all set to go.
 
 
 ## Usage
+
+Main feature of this ACL component is `PermissionsProvider`. Permission provider represent class that handle permissions. Currently there is only one permission provider `Eloquent` (you can assume that permissions will be stored in DB that you specified on your project).
+
+First step after installing this component is to create main structure for keeping ACL. You can easy done this by running `artisan` command:
+
+```
+php artisan acl:install
+```
+
+This will use current permission provider (`Eloquent`) and create DB structure for saving permissions. It will create 2 additional tables `acl_permissions` and `acl_user_permissions`.
+
+Next step is to fill available permission for your application. You can do this by overwriting ACL default config file.
+
+Copy config file to config packages dir (run this from root of your application):
+
+```
+cp -R vendor/vivify-ideas/acl/src/config/config.php app/config/packages/vivify-ideas/acl/config.php
+```
+
+In the config file there is `permissions` section that you need to put all permissions that exist in your system in `permissions` section.
+
+When you are satisfy how your permissions look like, run next artisan command:
+
+```
+php artisan acl:manage reload-permissions
+```
