@@ -50,10 +50,10 @@ This will use current permission provider (`Eloquent`) and create DB structure f
 
 Next step is to fill available permission for your application. You can do this by overwriting ACL default config file.
 
-Copy config file to config packages dir (run this from root of your application):
+Copy config file to config packages dir (so you can configure component):
 
 ```
-cp -R vendor/vivify-ideas/acl/src/config/config.php app/config/packages/vivify-ideas/acl/config.php
+php artisan config:publish --path="vendor/vivify-ideas/acl/src/config" vivify-ideas/acl
 ```
 
 In the config file there is `permissions` section that you need to put all permissions that exist in your system in `permissions` section.
