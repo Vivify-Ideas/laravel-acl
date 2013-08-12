@@ -19,6 +19,7 @@ class Manager
     public function reloadPermissions()
     {
         $this->deleteAllPermissions();
+        $this->deleteAllUsersPermissions();
 
         $permissions = Config::get('acl::permissions');
 
@@ -35,6 +36,11 @@ class Manager
     public function deleteAllPermissions()
     {
         return $this->provider->deleteAllPermissions();
+    }
+
+    public function deleteAllUsersPermissions()
+    {
+        return $this->provider->deleteAllUsersPermissions();
     }
 
     public function createPermission($id, $allowed, $route, $resourceIdRequired)

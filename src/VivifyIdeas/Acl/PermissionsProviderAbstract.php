@@ -47,6 +47,8 @@ abstract class PermissionsProviderAbstract
 
     public abstract function deleteAllPermissions();
 
+    public abstract function deleteAllUsersPermissions();
+
     public abstract function createPermission($id, $allowed, $route, $resourceIdRequired);
 
     public abstract function removePermission($id);

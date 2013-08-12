@@ -111,4 +111,9 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     }
 
+    public function deleteAllUsersPermissions()
+    {
+
+    }
+
 }

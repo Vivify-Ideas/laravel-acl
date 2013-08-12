@@ -114,4 +114,9 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         return Permission::truncate();
     }
 
+    public function deleteAllUsersPermissions()
+    {
+        return UserPermission::truncate();
+    }
+
 }
