@@ -55,7 +55,15 @@ In the config file there is `permissions` section that you need to put all permi
 When you are satisfy how your permissions look like, run next artisan command:
 
 ```
-php artisan acl:manage reload-permissions
+php artisan acl:update
+```
+
+This command you need to run every time when you update config file with new permissions.
+
+If you want to delete all permissions (including user permissions), and again reload permissions from config file you can use this command:
+
+```
+php artisan acl:reset
 ```
 
 ### Checking permissions
