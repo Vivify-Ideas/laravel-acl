@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Laravel ACL by Vivify-Ideas</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Laravel ACL</h1>
+        <p>ACL component for Laravel 4</p>
+
+        <p class="view"><a href="https://github.com/Vivify-Ideas/laravel-acl">View the Project on GitHub <small>Vivify-Ideas/laravel-acl</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Vivify-Ideas/laravel-acl/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Vivify-Ideas/laravel-acl/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Vivify-Ideas/laravel-acl">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="laravel-acl" class="anchor" href="#laravel-acl"><span class="octicon octicon-link"></span></a>Laravel ACL</h1>
+
+<p>ACL component for Laravel 4.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>First you need to install this package through Composer. Edit your project's <code>composer.json</code> file to require <code>vivify-ideas/acl</code>.</p>
+
+<pre><code>  "require": {
+    "vivify-ideas/acl": "dev-master"
+  },
+  "minimum-stability" : "dev"
+</code></pre>
+
+<p>Next, update Composer from the Terminal:</p>
+
+<pre><code>  composer update
+</code></pre>
+
+<p>Once this operation completes, you will need to add the service provider into your app. Open <code>app/config/app.php</code>, and add a new item to the providers array.</p>
+
+<pre><code>  'VivifyIdeas\Acl\AclServiceProvider
+</code></pre>
+
+<p>And also add two new aliases into aliases array.</p>
+
+<pre><code>  'Acl'        =&gt; 'VivifyIdeas\Acl\Facades\Checker',
+  'AclManager' =&gt; 'VivifyIdeas\Acl\Facades\Manager',
+</code></pre>
+
+<p>Last step is to create main structure for keeping ACL. You can easy done this by running <code>artisan</code> command:</p>
+
+<pre><code>php artisan acl:install
+</code></pre>
+
+<p>This will use current permission provider (<code>Eloquent</code>) and create DB structure for saving permissions. It will create 2 additional tables <code>acl_permissions</code> and <code>acl_user_permissions</code>.</p>
+
+<p>That's it! You're all set to go.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Main feature of this ACL component is <code>PermissionsProvider</code>. Permission provider represent class that handle permissions. Currently there is only one permission provider <code>Eloquent</code> (you can assume that permissions will be stored in DB that you specified on your project).</p>
+
+<p>First step is to fill available permission for your application. You can do this by overwriting ACL default config file (<code>app/config/packages/vivify-ideas/acl/config.php</code>).</p>
+
+<p>In the config file there is <code>permissions</code> section that you need to put all permissions that exist in your system in <code>permissions</code> section.</p>
+
+<p>When you are satisfy how your permissions look like, run next artisan command:</p>
+
+<pre><code>php artisan acl:update
+</code></pre>
+
+<p>This command you need to run every time when you update config file with new permissions.</p>
+
+<p>If you want to delete all permissions (including user permissions), and again reload permissions from config file you can use this command:</p>
+
+<pre><code>php artisan acl:reset
+</code></pre>
+
+<h3>
+<a name="checking-permissions" class="anchor" href="#checking-permissions"><span class="octicon octicon-link"></span></a>Checking permissions</h3>
+
+<p>Here are few ways how to check user permissions:</p>
+
+<div class="highlight"><pre><span class="c1">// Whether a user with ID 2 can see a list of all products</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'LIST_PRODUCTS'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">check</span><span class="p">();</span>
+
+<span class="c1">// Whether a user with ID 1 can edit product with ID 2</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'EDIT_PRODUCT'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">check</span><span class="p">();</span>
+
+<span class="c1">// Can currently authenticated user edit product with ID 2</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">permission</span><span class="p">(</span><span class="s1">'EDIT_PRODUCT'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">check</span><span class="p">();</span>
+
+<span class="c1">// Whether a user with ID 1 can edit and delete product with ID 2</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'EDIT_PRODUCT'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'DELETE_PRODUCT'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">check</span><span class="p">();</span>
+
+<span class="c1">// Can user with ID 1 access /products URL</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">checkRoute</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">)</span>
+
+<span class="c1">// Can currently authenticated user access /products URL</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">checkRoute</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">);</span>
+
+<span class="c1">// Get me array of product IDs that user with ID 1 can edit</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'EDIT_PRODUCT'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">getResourceIds</span><span class="p">();</span>
+
+<span class="c1">// Get me array of product IDs that user with ID 1 can not edit</span>
+<span class="nx">Acl</span><span class="o">::</span><span class="na">user</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">permission</span><span class="p">(</span><span class="s1">'EDIT_PRODUCT'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">getResourceIds</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+</pre></div>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Vivify-Ideas">Vivify-Ideas</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
