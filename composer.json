@@ -3,7 +3,7 @@
     "type": "library",
     "description": "ACL component for Laravel 4",
     "keywords": ["acl","laravel"],
-    "homepage": "http://github.com/Vivify-Ideas/laravel-acl",
+    "homepage": "http://vivify-ideas.github.io/laravel-acl",
     "license": "MIT",
     "authors": [
         {
