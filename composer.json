@@ -1,0 +1,26 @@
+{
+    "name": "vivify-ideas/acl",
+    "description": "",
+    "authors": [
+        {
+            "name": "VivifyIdeas",
+            "email": "dev@vivifyideas.com"
+        }
+    ],
+    "require-dev": {
+        "orchestra/testbench": "2.0.*"
+    },
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "VivifyIdeas\\Acl": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
