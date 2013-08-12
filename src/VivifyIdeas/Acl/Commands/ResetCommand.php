@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 /**
  * Custom Artisan command for reseting ACL permissions.
  */
-class ManageCommand extends Command
+class ResetCommand extends Command
 {
 
 	/**
