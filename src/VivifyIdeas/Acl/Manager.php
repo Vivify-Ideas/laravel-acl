@@ -145,6 +145,11 @@ class Manager
         return $this->provider->updateUserPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
     }
 
+    public function getAllPermissions()
+    {
+        return $this->provider->getAllPermissions();
+    }
+
 
 
 }
