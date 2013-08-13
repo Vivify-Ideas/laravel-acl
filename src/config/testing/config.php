@@ -86,6 +86,22 @@ return array(
             'name' => 'View user',
             'group_id' => 'MANAGE_USERS'
         ),
+        array(
+            'id' => 'LIST_ASSETS',
+            'allowed' => false,
+            'route' => 'GET:/assets$',
+            'resource_id_required' => false,
+            'name' => 'List assets',
+            'group_id' => 'MANAGE_STUFF'
+        ),
+        array(
+            'id' => 'SPEC_USER',
+            'allowed' => false,
+            'route' => 'GET:/spec-user$',
+            'resource_id_required' => false,
+            'name' => 'Spec user',
+            'group_id' => 'STUFF_PRIVILEGES'
+        ),
     ),
 
     'groups' => array(

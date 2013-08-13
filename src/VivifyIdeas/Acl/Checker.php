@@ -271,6 +271,24 @@ class Checker
         return $allowed;
     }
 
+    public function checkGroup($id)
+    {
+        $exist = false;
+
+        foreach ($this->getUserPermissions() as $permission) {
+            if (@$permission['group_id'] == $id) {
+                $exist = true;
+                if ($permission['allowed'] || !empty($permission['allowed_ids'])) {
+                    $this->clean();
+                    return true;
+                }
+            }
+        }
+
+        $this->clean();
+        return !$exist;
+    }
+
     /**
      * Throw exception and make additional work.
      *

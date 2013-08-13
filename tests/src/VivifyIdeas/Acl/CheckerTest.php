@@ -184,6 +184,33 @@ class CheckerTest extends Orchestra\Testbench\TestCase
     }
 
     /**
+     * Testing checkGroup method
+     *
+     * @group acl.checker.group
+     */
+    public function testCheckGroup()
+    {
+        // group does not exist
+        $this->assertTrue(Acl::user(2)->checkGroup('NOT_FOUND'));
+
+        // this group does not have any permission assigned
+        $this->assertTrue(Acl::user(2)->checkGroup('MANAGE_SPEC_USER'));
+
+        // this group have all allowed permissions
+        $this->assertTrue(Acl::user(2)->checkGroup('MANAGE_PRODUCTS'));
+
+        // this group have one not allowed permission
+        $this->assertTrue(Acl::user(2)->checkGroup('MANAGE_USERS'));
+
+        // this group have one permission that have allowed_ids set
+        $this->assertTrue(Acl::user(2)->checkGroup('MANAGE_STUFF'));
+
+        // this group has one permission that is not allowed
+        $this->assertFalse(Acl::user(2)->checkGroup('STUFF_PRIVILEGES'));
+
+    }
+
+    /**
      * Testing getUserPermissions method
      *
      * @dataProvider getPermissions
@@ -253,6 +280,24 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'excluded_ids' => null,
                     'group_id' => 'MANAGE_USERS'
                 ),
+                'LIST_ASSETS' => array(
+                    'id' => 'LIST_ASSETS',
+                    'allowed' => false,
+                    'route' => 'GET:/assets$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                    'group_id' => 'MANAGE_STUFF'
+                ),
+                'SPEC_USER' => array(
+                    'id' => 'SPEC_USER',
+                    'allowed' => false,
+                    'route' => 'GET:/spec-user$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                    'group_id' => 'STUFF_PRIVILEGES'
+                ),
             )),
 
             array(2, array(
@@ -308,6 +353,24 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'allowed_ids' => array(2, 3, 4),
                     'excluded_ids' => array(9),
                     'group_id' => 'MANAGE_USERS'
+                ),
+                'LIST_ASSETS' => array(
+                    'id' => 'LIST_ASSETS',
+                    'allowed' => false,
+                    'route' => 'GET:/assets$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => array(2,3,4),
+                    'excluded_ids' => null,
+                    'group_id' => 'MANAGE_STUFF'
+                ),
+                'SPEC_USER' => array(
+                    'id' => 'SPEC_USER',
+                    'allowed' => false,
+                    'route' => 'GET:/spec-user$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                    'group_id' => 'STUFF_PRIVILEGES'
                 ),
             ))
         );

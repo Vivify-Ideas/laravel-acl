@@ -40,6 +40,12 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                     'allowed_ids' => array(2,3,4),
                     'excluded_ids' => array(9),
                 ),
+                array(
+                    'id' => 'LIST_ASSETS',
+                    'allowed' => null,
+                    'allowed_ids' => array(2,3,4),
+                    'excluded_ids' => null,
+                ),
             );
         }
     }

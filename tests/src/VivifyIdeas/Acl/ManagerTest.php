@@ -52,7 +52,17 @@ class ManagerTest extends Orchestra\Testbench\TestCase
                 'children' => array(
                     array(
                         'id' => 'MANAGE_STUFF',
-                        'name' => 'Manage Stuff'
+                        'name' => 'Manage Stuff',
+                        'children' => array(
+                            array(
+                                'id' => 'LIST_ASSETS',
+                                'allowed' => false,
+                                'route' => 'GET:/assets$',
+                                'resource_id_required' => false,
+                                'name' => 'List assets',
+                                'group_id' => 'MANAGE_STUFF'
+                            ),
+                        )
                     ),
                     array(
                         'id' => 'MANAGE_PRODUCTS',
@@ -115,6 +125,16 @@ class ManagerTest extends Orchestra\Testbench\TestCase
             array(
                 'id' => 'STUFF_PRIVILEGES',
                 'name' => 'Stuff Privileges',
+                'children' => array(
+                    array(
+                        'id' => 'SPEC_USER',
+                        'allowed' => false,
+                        'route' => 'GET:/spec-user$',
+                        'resource_id_required' => false,
+                        'name' => 'Spec user',
+                        'group_id' => 'STUFF_PRIVILEGES'
+                    )
+                )
             ),
             array(
                 'id' => 'LIST_PRODUCTS',
