@@ -161,4 +161,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         return Group::truncate();
     }
 
+    public function getUserPermission($userId, $permissionId)
+    {
+        return UserPermission::where('user_id', '=', $userId)
+                            ->where('permission_id', '=', $permissionId)
+                            ->get()->toArray();
+    }
+
 }

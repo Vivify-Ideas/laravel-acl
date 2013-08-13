@@ -114,4 +114,6 @@ abstract class PermissionsProviderAbstract
 
     public abstract function deleteAllGroups();
 
+    public abstract function getUserPermission($userId, $permissionId);
+
 }

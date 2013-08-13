@@ -97,4 +97,9 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     }
 
+    public function getUserPermission($userId, $permissionId)
+    {
+
+    }
+
 }

@@ -154,6 +154,22 @@ class Manager
         return $this->provider->updateUserPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
     }
 
+    public function getUserPermission($userId, $permissionId)
+    {
+        return $this->provider->getUserPermission($userId, $permissionId);
+    }
+
+    public function setUserPermission(
+        $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
+    ) {
+        $permission = $this->getUserPermission($userId, $permissionId);
+        if (empty($permission)) {
+            return $this->provider->assignPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
+        } else {
+            return $this->provider->updateUserPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
+        }
+    }
+
     public function getAllPermissions()
     {
         return $this->provider->getAllPermissions();
