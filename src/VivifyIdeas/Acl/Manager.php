@@ -104,9 +104,17 @@ class Manager
         return $this->provider->deleteAllGroups();
     }
 
-    public function updateUserPermissions($permissions)
+    public function updateUserPermissions($userId, array $permissions)
     {
-        return $this->provider->getUserPermissions();
+        foreach ($permissions as $permission) {
+            $this->updateUserPermission(
+                $userId,
+                $permission['id'],
+                @$permission['allowed'],
+                @$permission['allowed_ids'],
+                @$permission['excluded_ids']
+            );
+        }
     }
 
     public function deleteAllPermissions()
