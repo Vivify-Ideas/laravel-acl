@@ -4,6 +4,7 @@ namespace VivifyIdeas\Acl\PermissionProviders;
 
 use VivifyIdeas\Acl\Models\UserPermission;
 use VivifyIdeas\Acl\Models\Permission;
+use VivifyIdeas\Acl\Models\Group;
 
 /**
  * Default Eloquent permission provider.
@@ -143,6 +144,20 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     public function deleteAllUsersPermissions()
     {
         return UserPermission::truncate();
+    }
+
+    public function insertGroup($id, $name, $parentId = null)
+    {
+        return Group::create(array(
+            'id' => $id,
+            'name' => $name,
+            'parent_id' => $parentId
+        ))->toArray();
+    }
+
+    public function deleteAllGroups()
+    {
+        return Group::truncate();
     }
 
 }

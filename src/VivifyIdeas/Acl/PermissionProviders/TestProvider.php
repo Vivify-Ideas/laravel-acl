@@ -122,4 +122,14 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     }
 
+    public function insertGroup($id, $name, $parentId = null)
+    {
+
+    }
+
+    public function deleteAllGroups()
+    {
+
+    }
+
 }

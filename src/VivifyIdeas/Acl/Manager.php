@@ -64,9 +64,48 @@ class Manager
         return $forDelete;
     }
 
+    public function reloadGroups($parentGroup = null, $groups = null)
+    {
+        if (empty($groups)) {
+            $groups = Config::get('acl::groups');
+        }
+
+        if ($parentGroup === null) {
+            $this->deleteAllGroups();
+        }
+
+        $newGroups = array();
+
+        foreach ($groups as $group) {
+            if (empty($group['children'])) {
+                $newGroups[$group['id']] = $parentGroup;
+                $this->insertGroup($group['id'], $group['name'], $parentGroup);
+            } else {
+                $newGroups[$group['id']] = $parentGroup;
+                $this->insertGroup($group['id'], $group['name'], $parentGroup);
+                $newGroups = array_merge(
+                    $newGroups,
+                    $this->reloadGroups($group['id'], $group['children'])
+                );
+            }
+        }
+
+        return $newGroups;
+    }
+
+    public function insertGroup($id, $name, $parentId = null)
+    {
+        return $this->provider->insertGroup($id, $name, $parentId);
+    }
+
+    public function deleteAllGroups()
+    {
+        return $this->provider->deleteAllGroups();
+    }
+
     public function updateUserPermissions($permissions)
     {
-        $this->provider->getUserPermissions();
+        return $this->provider->getUserPermissions();
     }
 
     public function deleteAllPermissions()

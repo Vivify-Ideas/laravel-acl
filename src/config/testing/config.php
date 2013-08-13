@@ -13,7 +13,7 @@ return array(
     | Supported: "eloquent"
     |
     */
-    'provider' => 'eloquent',
+    'provider' => 'test',
 
     /*
     |--------------------------------------------------------------------------
@@ -40,6 +40,35 @@ return array(
     */
     'permissions' => array(),
 
-    'groups' => array(),
+    'groups' => array(
+        array(
+            'id' => 'ADMIN_PRIVILEGES',
+            'name' => 'Administrator Privileges',
+            'children' => array(
+                array(
+                    'id' => 'MANAGE_USERS',
+                    'name' => 'Manage Users'
+                ),
+                array(
+                    'id' => 'MANAGE_PRODUCTS',
+                    'name' => 'Manage Products'
+                ),
+                array(
+                    'id' => 'MANAGE_TAGS',
+                    'name' => 'Manage Tags',
+                    'children' => array(
+                        array(
+                            'id' => 'EDIT_TAG',
+                            'name' => 'edit tag'
+                        )
+                    )
+                )
+            )
+        ),
+        array(
+            'id' => 'STUFF_PRIVILEGES',
+            'name' => 'Stuff Privileges',
+        )
+    )
 
 );

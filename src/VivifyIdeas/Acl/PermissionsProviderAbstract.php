@@ -110,4 +110,8 @@ abstract class PermissionsProviderAbstract
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     );
 
+    public abstract function insertGroup($id, $name, $parentId = null);
+
+    public abstract function deleteAllGroups();
+
 }

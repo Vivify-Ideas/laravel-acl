@@ -9,15 +9,6 @@
 class ManagerTest extends Orchestra\Testbench\TestCase
 {
 
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->app->bind('AclManager', function() {
-            return new VivifyIdeas\Acl\Manager(new VivifyIdeas\Acl\PermissionProviders\TestProvider);
-        });
-    }
-
     protected function getPackageProviders()
     {
         return array('VivifyIdeas\Acl\AclServiceProvider');
@@ -45,7 +36,20 @@ class ManagerTest extends Orchestra\Testbench\TestCase
         );
 
         $this->assertEquals($expected, AclManager::reloadPermissions(true));
+    }
 
+    public function testReloadGroups()
+    {
+        $expected = array(
+            'ADMIN_PRIVILEGES' => null,
+            'MANAGE_USERS' => 'ADMIN_PRIVILEGES',
+            'MANAGE_PRODUCTS' => 'ADMIN_PRIVILEGES',
+            'MANAGE_TAGS' => 'ADMIN_PRIVILEGES',
+            'EDIT_TAG' => 'MANAGE_TAGS',
+            'STUFF_PRIVILEGES' => null
+        );
+
+        $this->assertEquals($expected, AclManager::reloadGroups());
     }
 
 

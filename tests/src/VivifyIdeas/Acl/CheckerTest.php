@@ -9,15 +9,6 @@
 class CheckerTest extends Orchestra\Testbench\TestCase
 {
 
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->app->bind('Acl', function() {
-            return new VivifyIdeas\Acl\Checker(new VivifyIdeas\Acl\PermissionProviders\TestProvider);
-        });
-    }
-
     protected function getPackageProviders()
     {
         return array('VivifyIdeas\Acl\AclServiceProvider');
