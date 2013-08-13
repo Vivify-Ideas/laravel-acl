@@ -27,12 +27,14 @@ return array(
     |     'id' => 'PERMISSION_ID',
     |     'allowed' => true|false,
     |     'route' => array('GET:/resource/(\d+)/edit', 'PUT:/resource/(\d+)'),
-    |     'resource_id_required' => true|false
+    |     'resource_id_required' => true|false,
+    |     'name' => 'Permission name'
     | ), array(
     |     'id' => 'PERMISSION_ID_2',
     |     'allowed' => true|false,
     |     'route' => 'GET:/resource/(\d+)',
-    |     'resource_id_required' => true|false
+    |     'resource_id_required' => true|false,
+    |     'name' => 'Permission 2 name'
     | ),...
     |
     */
