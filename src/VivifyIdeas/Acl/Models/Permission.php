@@ -12,7 +12,7 @@ class Permission extends Eloquent
 {
     protected $table = 'acl_permissions';
 
-    protected $fillable = array('id', 'allowed', 'route', 'resource_id_required');
+    protected $fillable = array('id', 'allowed', 'route', 'resource_id_required', 'name');
 
     public $timestamps = false;
 

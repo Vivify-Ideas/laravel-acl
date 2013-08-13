@@ -49,42 +49,48 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 'id' => 'EDIT_PRODUCT',
                 'allowed' => true,
                 'route' => array('GET:/products/(\d+)/edit', 'PUT:/products/(\d+)'),
-                'resource_id_required' => true
+                'resource_id_required' => true,
+                'name' => 'Edit product'
             ),
             array(
                 'id' => 'VIEW_PRODUCT',
                 'allowed' => true,
                 'route' => 'GET:/products/(\d+)$',
-                'resource_id_required' => true
+                'resource_id_required' => true,
+                'name' => 'View product'
             ),
             array(
                 'id' => 'CREATE_PRODUCT',
                 'allowed' => true,
                 'route' => array('GET:/products/create', 'POST:/products'),
-                'resource_id_required' => false
+                'resource_id_required' => false,
+                'name' => 'Create product'
             ),
             array(
                 'id' => 'LIST_PRODUCTS',
                 'allowed' => true,
                 'route' => 'GET:/products',
-                'resource_id_required' => false
+                'resource_id_required' => false,
+                'name' => 'List products'
             ),
             array(
                 'id' => 'EDIT_USER',
                 'allowed' => true,
                 'route' => array('GET:/users/(\d+)/edit', 'PUT:/users/(\d+)'),
-                'resource_id_required' => true
+                'resource_id_required' => true,
+                'name' => 'Edit user'
             ),
             array(
                 'id' => 'VIEW_USER',
                 'allowed' => false,
                 'route' => 'GET:/users/(\d+)$',
-                'resource_id_required' => true
+                'resource_id_required' => true,
+                'name' => 'View user'
             ),
         );
     }
 
-    public function createPermission($id, $allowed, $route, $resourceIdRequired)
+    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name)
     {
     }
 

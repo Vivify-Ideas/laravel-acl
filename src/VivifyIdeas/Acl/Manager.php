@@ -56,7 +56,8 @@ class Manager
                 $permission['id'],
                 $permission['allowed'],
                 $permission['route'],
-                $permission['resource_id_required']
+                $permission['resource_id_required'],
+                $permission['name']
             );
         }
 
@@ -78,9 +79,9 @@ class Manager
         return $this->provider->deleteAllUsersPermissions();
     }
 
-    public function createPermission($id, $allowed, $route, $resourceIdRequired)
+    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name)
     {
-        return $this->provider->createPermission($id, $allowed, $route, $resourceIdRequired);
+        return $this->provider->createPermission($id, $allowed, $route, $resourceIdRequired, $name);
     }
 
     public function removePermission($id)

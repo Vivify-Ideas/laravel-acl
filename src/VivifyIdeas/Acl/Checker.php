@@ -92,6 +92,7 @@ class Checker
             foreach ($this->allPermissions as $permission) {
                 $permission['allowed_ids'] = null;
                 $permission['excluded_ids'] = null;
+                unset($permission['name']);
 
                 $permissions[$permission['id']] = $permission;
             }

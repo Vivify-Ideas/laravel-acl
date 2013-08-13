@@ -62,10 +62,11 @@ abstract class PermissionsProviderAbstract
      * @param bool $allowed
      * @param string|array $route
      * @param bool $resourceIdRequired
+     * @param string $name
      *
      * @return array
      */
-    public abstract function createPermission($id, $allowed, $route, $resourceIdRequired);
+    public abstract function createPermission($id, $allowed, $route, $resourceIdRequired, $name);
 
     /**
      * Remove permission by ID

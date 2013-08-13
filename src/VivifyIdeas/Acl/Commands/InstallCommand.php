@@ -76,6 +76,7 @@ class InstallCommand extends Command
 				$table->boolean('allowed');
 				$table->string('route');
 				$table->boolean('resource_id_required');
+				$table->string('name');
 			});
 		}
 
