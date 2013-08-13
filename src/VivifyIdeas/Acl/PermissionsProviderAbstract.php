@@ -66,7 +66,7 @@ abstract class PermissionsProviderAbstract
      *
      * @return array
      */
-    public abstract function createPermission($id, $allowed, $route, $resourceIdRequired, $name);
+    public abstract function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null);
 
     /**
      * Remove permission by ID

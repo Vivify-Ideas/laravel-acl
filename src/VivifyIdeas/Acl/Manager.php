@@ -57,7 +57,8 @@ class Manager
                 $permission['allowed'],
                 $permission['route'],
                 $permission['resource_id_required'],
-                $permission['name']
+                $permission['name'],
+                @$permission['group_id']
             );
         }
 
@@ -118,9 +119,9 @@ class Manager
         return $this->provider->deleteAllUsersPermissions();
     }
 
-    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name)
+    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null)
     {
-        return $this->provider->createPermission($id, $allowed, $route, $resourceIdRequired, $name);
+        return $this->provider->createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId);
     }
 
     public function removePermission($id)
@@ -148,6 +149,55 @@ class Manager
     public function getAllPermissions()
     {
         return $this->provider->getAllPermissions();
+    }
+
+    public function getAllPermissionsGrouped($grouped = null, $groups = null)
+    {
+        $permissions = null;
+
+        if ($grouped === null) {
+            $permissions = $this->provider->getAllPermissions();
+
+            $grouped = array();
+            foreach ($permissions as $key => $permission) {
+                if (isset($permission['group_id'])) {
+                    $grouped[$permission['group_id']][] = $permission;
+                    unset($permissions[$key]);
+                }
+            }
+        }
+
+        if ($groups === null) {
+            $groups = Config::get('acl::groups');
+        }
+
+        foreach ($groups as &$group) {
+            if (!empty($group['children'])) {
+                $temp = $this->getAllPermissionsGrouped($grouped, $group['children']);
+
+                $group['children'] = $temp;
+
+                if (!empty($grouped[$group['id']])) {
+                    if (!isset($group['children'])) {
+                        $group['children'] = array();
+                    }
+                    $group['children'] = array_merge($group['children'], $grouped[$group['id']]);
+                }
+            } else {
+                if (!empty($grouped[$group['id']])) {
+                    if (!isset($group['children'])) {
+                        $group['children'] = array();
+                    }
+                    $group['children'] = array_merge($group['children'], $grouped[$group['id']]);
+                }
+            }
+        }
+
+        if ($permissions !== null) {
+            return array_merge($groups, $permissions);
+        }
+
+        return $groups;
     }
 
 

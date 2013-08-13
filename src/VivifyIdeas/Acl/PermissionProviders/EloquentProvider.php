@@ -67,14 +67,15 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     /**
      * @see parent description
      */
-    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name)
+    public function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null)
     {
         return Permission::create(array(
             'id' => $id,
             'allowed' => $allowed,
             'route' => is_array($route)? json_encode($route) : $route,
             'resource_id_required' => $resourceIdRequired,
-            'name' => $name
+            'name' => $name,
+            'group_id' => $groupId
         ))->toArray();
     }
 

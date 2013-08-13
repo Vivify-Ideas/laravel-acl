@@ -207,6 +207,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'VIEW_PRODUCT' => array(
                     'id' => 'VIEW_PRODUCT',
@@ -215,6 +216,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'CREATE_PRODUCT' => array(
                     'id' => 'CREATE_PRODUCT',
@@ -223,6 +225,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => false,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'LIST_PRODUCTS' => array(
                     'id' => 'LIST_PRODUCTS',
@@ -239,6 +242,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_USERS'
                 ),
                 'VIEW_USER' => array(
                     'id' => 'VIEW_USER',
@@ -247,6 +251,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_USERS'
                 ),
             )),
 
@@ -258,6 +263,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => array(2, 3, 4),
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'VIEW_PRODUCT' => array(
                     'id' => 'VIEW_PRODUCT',
@@ -266,6 +272,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'CREATE_PRODUCT' => array(
                     'id' => 'CREATE_PRODUCT',
@@ -274,6 +281,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => false,
                     'allowed_ids' => null,
                     'excluded_ids' => null,
+                    'group_id' => 'MANAGE_PRODUCTS'
                 ),
                 'LIST_PRODUCTS' => array(
                     'id' => 'LIST_PRODUCTS',
@@ -290,6 +298,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => array(2, 3, 4),
                     'excluded_ids' => array(9),
+                    'group_id' => 'MANAGE_USERS'
                 ),
                 'VIEW_USER' => array(
                     'id' => 'VIEW_USER',
@@ -298,6 +307,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'resource_id_required' => true,
                     'allowed_ids' => array(2, 3, 4),
                     'excluded_ids' => array(9),
+                    'group_id' => 'MANAGE_USERS'
                 ),
             ))
         );

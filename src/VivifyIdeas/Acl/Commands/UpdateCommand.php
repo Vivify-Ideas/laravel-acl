@@ -33,6 +33,7 @@ class UpdateCommand extends Command
 	{
 		\AclManager::reloadPermissions(true);
 
+		\AclManager::reloadGroups();
 
 		$this->info('ACL permissions successful updated!');
 	}

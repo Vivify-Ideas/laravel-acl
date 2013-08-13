@@ -83,6 +83,7 @@ class InstallCommand extends Command
 				$table->string('route');
 				$table->boolean('resource_id_required');
 				$table->string('name');
+				$table->string('group_id')->nullable()->default(null);
 			});
 		}
 
