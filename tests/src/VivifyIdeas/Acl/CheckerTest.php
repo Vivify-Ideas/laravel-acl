@@ -42,6 +42,8 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue(Acl::user(2)->permission('VIEW_USER', 2)->check());
         $this->assertFalse(Acl::user(2)->permission('VIEW_USER', 9)->check());
         $this->assertFalse(Acl::user(2)->permission('VIEW_USER', 99)->check());
+
+        $this->assertTrue(Acl::user(1986)->permission('VIEW_USER', 9)->check());
     }
 
     /**
@@ -69,6 +71,12 @@ class CheckerTest extends Orchestra\Testbench\TestCase
 
         $this->assertFalse(
             Acl::user(2)->permission('EDIT_USER', 22)
+                        ->permission('VIEW_PRODUCT', 3)
+                        ->check()
+        );
+
+        $this->assertTrue(
+            Acl::user(1986)->permission('EDIT_PRODUCT', 2)
                         ->permission('VIEW_PRODUCT', 3)
                         ->check()
         );
@@ -162,6 +170,8 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue(Acl::user(2)->checkRoute('GET', '/users/3'));
         $this->assertFalse(Acl::user(2)->checkRoute('GET', '/users/9'));
         $this->assertFalse(Acl::user(2)->checkRoute('GET', '/users/99'));
+
+        $this->assertTrue(Acl::user(1986)->checkRoute('GET', '/users/99'));
     }
 
     /**
@@ -208,6 +218,8 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         // this group has one permission that is not allowed
         $this->assertFalse(Acl::user(2)->checkGroup('STUFF_PRIVILEGES'));
 
+        $this->assertTrue(Acl::user(1986)->checkGroup('STUFF_PRIVILEGES'));
+
     }
 
     /**
@@ -218,6 +230,15 @@ class CheckerTest extends Orchestra\Testbench\TestCase
     public function testGetUserPermissions($userId, $expected)
     {
         $this->assertEquals($expected, Acl::user($userId)->getUserPermissions());
+    }
+
+    public function testIsSuperuser()
+    {
+        $this->assertFalse(Acl::isSuperuser());
+        $this->assertFalse(Acl::user(2)->isSuperuser());
+        $this->assertTrue(Acl::user(1986)->isSuperuser());
+
+        $this->assertEquals(array(1986), Acl::superusers());
     }
 
     /**

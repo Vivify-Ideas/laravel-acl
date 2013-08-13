@@ -3,6 +3,7 @@
 namespace VivifyIdeas\Acl;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Main ACL class for checking does user have some permissions.
@@ -64,6 +65,23 @@ class Checker
         $this->permissionsForChecking[$permission] = $resourceId;
 
         return $this;
+    }
+
+    public function isSuperuser()
+    {
+        if (!$this->userId) {
+            // if user id is not set, try to get authenticated user
+            if (Auth::user()) {
+                $this->user(Auth::user()->id);
+            }
+        }
+
+        return ($this->userId != null &&  in_array($this->userId, Config::get('acl::superusers')));
+    }
+
+    public function superusers()
+    {
+        return Config::get('acl::superusers');
     }
 
     /**
@@ -129,6 +147,11 @@ class Checker
      */
     public function checkRoute($httpMethod, $route)
     {
+        if ($this->isSuperuser()) {
+            $this->clean();
+            return true;
+        }
+
         foreach ($this->getUserPermissions() as $userPermission) {
             if (is_array($userPermission['route'])) {
                 $allowed = null;
@@ -212,6 +235,11 @@ class Checker
      */
     public function check()
     {
+        if ($this->isSuperuser()) {
+            $this->clean();
+            return true;
+        }
+
         $allowed = null;
         $userPermissions = $this->getUserPermissions();
 
@@ -273,6 +301,11 @@ class Checker
 
     public function checkGroup($id)
     {
+        if ($this->isSuperuser()) {
+            $this->clean();
+            return true;
+        }
+
         $exist = false;
 
         foreach ($this->getUserPermissions() as $permission) {

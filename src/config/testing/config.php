@@ -15,6 +15,8 @@ return array(
     */
     'provider' => 'test',
 
+    'superusers' => array(1986),
+
     /*
     |--------------------------------------------------------------------------
     | Permissions in the application
