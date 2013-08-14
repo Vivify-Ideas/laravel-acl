@@ -152,10 +152,10 @@ class Checker
             $this->clean();
             return true;
         }
-        
+
         $groups = (array) $this->getGroups();
         $userPermissions = (array) $this->getUserPermissions();
-        
+
         $list = array_merge($groups, $userPermissions);
         foreach ($list as $item) {
             if (is_array($item['route'])) {
@@ -197,7 +197,7 @@ class Checker
     {
         if (preg_match('#' . $regExr . '#', strtoupper($httpMethod) . ':' . $route, $matches)) {
             $resourceId = isset($matches[1])? $matches[1] : null;
-            
+
             if (isset($item['allowed'])) {
                 // this is permission
                 return $this->permission($item['id'], $resourceId)->check();
@@ -320,8 +320,15 @@ class Checker
 
         $exist = false;
 
+
+        $ids = array();
+
+        foreach ($this->getChildGroups($id) as $group) {
+            $ids[] = $group['id'];
+        }
+
         foreach ($this->getUserPermissions() as $permission) {
-            if (@$permission['group_id'] == $id) {
+            if (in_array(@$permission['group_id'], $ids)) {
                 $exist = true;
                 if ($permission['allowed'] || !empty($permission['allowed_ids'])) {
                     $this->clean();
@@ -332,6 +339,12 @@ class Checker
 
         $this->clean();
         return !$exist;
+    }
+
+    private function end($return)
+    {
+        $this->clean();
+        return $return;
     }
 
     /**
@@ -360,9 +373,9 @@ class Checker
     {
         return $this->provider->getGroups();
     }
-    
+
     /**
-     * 
+     *
      * @param string|int $id Group ID
      * @param boolean $selfinclude Should that group also be returned
      * @return array
@@ -370,15 +383,15 @@ class Checker
     public function getChildGroups($id, $selfinclude = true)
     {
         $groups = $this->getGroups();
-        
+
         $childs = array();
         foreach ($groups as $group) {
             if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
                 $childs[$group['id']] = $group;
             }
         }
-        
+
         return $childs;
     }
-    
+
 }

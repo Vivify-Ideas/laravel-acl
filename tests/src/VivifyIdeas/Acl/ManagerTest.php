@@ -37,7 +37,10 @@ class ManagerTest extends Orchestra\Testbench\TestCase
             'MANAGE_PRODUCTS' => 'ADMIN_PRIVILEGES',
             'MANAGE_USERS' => 'ADMIN_PRIVILEGES',
             'MANAGE_SPEC_USER' => 'MANAGE_USERS',
-            'STUFF_PRIVILEGES' => null
+            'STUFF_PRIVILEGES' => null,
+            'SUPERADMIN_PRIVILEGES' => null,
+            'MANAGE_ADMINS' => 'SUPERADMIN_PRIVILEGES'
+
         );
 
         $this->assertEquals($expected, AclManager::reloadGroups());
@@ -133,6 +136,27 @@ class ManagerTest extends Orchestra\Testbench\TestCase
                         'resource_id_required' => false,
                         'name' => 'Spec user',
                         'group_id' => 'STUFF_PRIVILEGES'
+                    )
+                )
+            ),
+            array(
+                'id' => 'SUPERADMIN_PRIVILEGES',
+                'name' => 'SuperAdmin Privileges',
+
+                'children' => array(
+                    array(
+                        'id' => 'MANAGE_ADMINS',
+                        'name' => 'Manage Admins',
+                        'children' => array(
+                            array(
+                                'id' => 'CREATE_ADMIN',
+                                'allowed' => false,
+                                'route' => 'POST:/admins$',
+                                'resource_id_required' => false,
+                                'name' => 'Create admin',
+                                'group_id' => 'MANAGE_ADMINS'
+                            ),
+                        )
                     )
                 )
             ),

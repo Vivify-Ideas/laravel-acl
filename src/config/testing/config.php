@@ -2,46 +2,14 @@
 
 return array(
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Permission Provider
-    |--------------------------------------------------------------------------
-    |
-    | This option controls what provider will ACL use.
-    | Currently there is only one provider "eloquent".
-    |
-    | Supported: "eloquent"
-    |
-    */
     'provider' => 'test',
 
     'superusers' => array(1986),
     
     'guestuser' => 0,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Permissions in the application
-    |--------------------------------------------------------------------------
-    |
-    | This option need to contain all system wide permissions.
-    |
-    | Example:
-    | array(
-    |     'id' => 'PERMISSION_ID',
-    |     'allowed' => true|false,
-    |     'route' => array('GET:/resource/(\d+)/edit', 'PUT:/resource/(\d+)'),
-    |     'resource_id_required' => true|false,
-    |     'name' => 'Permission name'
-    | ), array(
-    |     'id' => 'PERMISSION_ID_2',
-    |     'allowed' => true|false,
-    |     'route' => 'GET:/resource/(\d+)',
-    |     'resource_id_required' => true|false,
-    |     'name' => 'Permission 2 name'
-    | ),...
-    |
-    */
+    'guestuser' => 0,
+
     'permissions' => array(
         array(
             'id' => 'EDIT_PRODUCT',
@@ -106,6 +74,14 @@ return array(
             'name' => 'Spec user',
             'group_id' => 'STUFF_PRIVILEGES'
         ),
+        array(
+            'id' => 'CREATE_ADMIN',
+            'allowed' => false,
+            'route' => 'POST:/admins$',
+            'resource_id_required' => false,
+            'name' => 'Create admin',
+            'group_id' => 'MANAGE_ADMINS'
+        ),
     ),
 
     'groups' => array(
@@ -136,7 +112,19 @@ return array(
         array(
             'id' => 'STUFF_PRIVILEGES',
             'name' => 'Stuff Privileges',
+        ),
+        array(
+            'id' => 'SUPERADMIN_PRIVILEGES',
+            'name' => 'SuperAdmin Privileges',
+
+            'children' => array(
+                array(
+                    'id' => 'MANAGE_ADMINS',
+                    'name' => 'Manage Admins'
+                )
+            )
         )
+
     )
 
 );

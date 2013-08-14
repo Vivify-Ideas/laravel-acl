@@ -86,7 +86,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     {
 
     }
-    
+
     public function getGroups()
     {
         return array(
@@ -107,6 +107,36 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 'name' => 'Manage Users',
                 'route' => 'GET:/admin/users.*',
                 'parent_id' => 'ADMIN_PRIVILEGES'
+            ),
+            array(
+                'id' => 'MANAGE_STUFF',
+                'name' => 'Manage Stuff',
+                'route' => null,
+                'parent_id' => 'ADMIN_PRIVILEGES'
+            ),
+            array(
+                'id' => 'MANAGE_SPEC_USER',
+                'name' => 'Manage Spec user',
+                'route' => null,
+                'parent_id' => 'MANAGE_USERS'
+            ),
+            array(
+                'id' => 'STUFF_PRIVILEGES',
+                'name' => 'Stuff Privileges',
+                'route' => null,
+                'parent_id' => null
+            ),
+            array(
+                'id' => 'SUPERADMIN_PRIVILEGES',
+                'name' => 'Administrator Privileges',
+                'route' => null,
+                'parent_id' => null
+            ),
+            array(
+                'id' => 'MANAGE_ADMINS',
+                'name' => 'Manage Stuff',
+                'route' => null,
+                'parent_id' => 'SUPERADMIN_PRIVILEGES'
             ),
         );
     }

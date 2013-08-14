@@ -210,7 +210,11 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         // this group has one permission that is not allowed
         $this->assertFalse(Acl::user(2)->checkGroup('STUFF_PRIVILEGES'));
 
+        // super user checking
         $this->assertTrue(Acl::user(1986)->checkGroup('STUFF_PRIVILEGES'));
+
+        // parent group permission
+        $this->assertFalse(Acl::user(2)->checkGroup('SUPERADMIN_PRIVILEGES'));
 
     }
 
@@ -232,12 +236,12 @@ class CheckerTest extends Orchestra\Testbench\TestCase
 
         $this->assertEquals(array(1986), Acl::superusers());
     }
-    
+
     public function testGetChildGroups()
     {
         $this->assertEquals(3, count(Acl::getChildGroups('ADMIN_PRIVILEGES')));
         $this->assertEquals(2, count(Acl::getChildGroups('ADMIN_PRIVILEGES', false)));
-        
+
         $res = Acl::getChildGroups('ADMIN_PRIVILEGES', false);
         $this->assertTrue(isset($res['MANAGE_PRODUCTS']) && isset($res['MANAGE_USERS']));
     }
@@ -320,6 +324,15 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'excluded_ids' => null,
                     'group_id' => 'STUFF_PRIVILEGES'
                 ),
+                'CREATE_ADMIN' => array(
+                    'id' => 'CREATE_ADMIN',
+                    'allowed' => false,
+                    'route' => 'POST:/admins$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                    'group_id' => 'MANAGE_ADMINS'
+                ),
             )),
 
             array(2, array(
@@ -393,6 +406,15 @@ class CheckerTest extends Orchestra\Testbench\TestCase
                     'allowed_ids' => null,
                     'excluded_ids' => null,
                     'group_id' => 'STUFF_PRIVILEGES'
+                ),
+                'CREATE_ADMIN' => array(
+                    'id' => 'CREATE_ADMIN',
+                    'allowed' => false,
+                    'route' => 'POST:/admins$',
+                    'resource_id_required' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                    'group_id' => 'MANAGE_ADMINS'
                 ),
             ))
         );
