@@ -322,11 +322,16 @@ class Checker
 
         $exist = false;
 
-
         $ids = array();
 
         foreach ($this->getChildGroups($id) as $group) {
             $ids[] = $group['id'];
+        }
+
+        if (empty($ids)) {
+            // route does not exist
+            $this->clean();
+            return true;
         }
 
         foreach ($this->getUserPermissions() as $permission) {
@@ -378,10 +383,10 @@ class Checker
 
     /**
      * List all children of a group
-     * 
+     *
      * @param string|int $id Group ID
      * @param boolean $selfinclude Should we return also the group with provided id
-     * @param boolean $recursive Should we return also child of child groups 
+     * @param boolean $recursive Should we return also child of child groups
      * @return array List of children groups
      */
     public function getChildGroups($id, $selfinclude = true, $recursive = true)
@@ -392,7 +397,7 @@ class Checker
         foreach ($groups as $group) {
             if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
                 $childs[$group['id']] = $group;
-                
+
                 if ($recursive && $group['id'] != $id) {
                     $childs = array_merge($childs, $this->getChildGroups($group['id']));
                 }
