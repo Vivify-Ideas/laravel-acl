@@ -8,21 +8,15 @@ use Illuminate\Support\Facades\Config;
 /**
  * Main ACL class for checking does user have some permissions.
  */
-class Checker
+class Acl
 {
-    private $provider;
+    private $manager;
     private $userId = null;
-    private $userPermissions = array();
     private $permissionsForChecking = array();
-    private $allPermissions = array();
-    private $permissions = array();
 
     public function __construct(PermissionsProviderAbstract $provider)
     {
-        $this->provider = $provider;
-
-        // set system default permissions
-        $this->allPermissions = $this->provider->getAllPermissions();
+        $this->manager = new Manager($provider);
     }
 
     /**
@@ -35,13 +29,17 @@ class Checker
     public function user($userId)
     {
         $this->userId = $userId;
-
-        if (!isset($this->userPermissions[$userId])) {
-            // if permission for this user is not loaded, load them
-            $this->userPermissions[$userId] = $this->provider->getUserPermissions($userId);
-        }
-
         return $this;
+    }
+    
+    public function currentUser()
+    {
+        if (Auth::user()) {
+            $this->user(Auth::user()->id);
+        } else {
+            // guest user
+            $this->user(Config::get('acl::guestuser'));
+        }
     }
 
     /**
@@ -71,12 +69,10 @@ class Checker
     {
         if (!$this->userId) {
             // if user id is not set, try to get authenticated user
-            if (Auth::user()) {
-                $this->user(Auth::user()->id);
-            }
+            $this->currentUser();
         }
 
-        return ($this->userId != null &&  in_array($this->userId, Config::get('acl::superusers')));
+        return ($this->userId !== null &&  in_array($this->userId, Config::get('acl::superusers')));
     }
 
     public function superusers()
@@ -93,48 +89,10 @@ class Checker
     {
         if (!$this->userId) {
             // if user id is not set, try to get authenticated user
-            if (Auth::user()) {
-                $this->user(Auth::user()->id);
-            } else {
-                // guest user
-                $this->user(Config::get('acl::guestuser'));
-            }
+            $this->currentUser();
         }
-
-        // get user permissions
-        $userPermissions = $this->userPermissions[$this->userId];
-
-        if (!isset($this->permissions[$this->userId])) {
-            $permissions = array();
-
-            // get all permissions
-            foreach ($this->allPermissions as $permission) {
-                $permission['allowed_ids'] = null;
-                $permission['excluded_ids'] = null;
-                unset($permission['name']);
-
-                $permissions[$permission['id']] = $permission;
-            }
-
-            // overwrite with user permissions
-            foreach ($userPermissions as $userPermission) {
-                if (@$userPermission['allowed'] === null) {
-                    // allowed is not set, so use from system default
-                    unset($userPermission['allowed']);
-                }
-
-                $temp = $permissions[$userPermission['id']];
-
-                $temp = array_merge($temp, $userPermission);
-
-                $permissions[$userPermission['id']] = $temp;
-            }
-
-            // set finall permissions for particular user
-            $this->permissions[$this->userId] = $permissions;
-        }
-
-        return $this->permissions[$this->userId];
+        
+        return $this->manager->getUserPermissions($this->userId);
     }
 
 
@@ -153,7 +111,7 @@ class Checker
             return true;
         }
 
-        $groups = (array) $this->getGroups();
+        $groups = (array) $this->manager->getGroups();
         $userPermissions = (array) $this->getUserPermissions();
 
         $list = array_merge($groups, $userPermissions);
@@ -323,8 +281,7 @@ class Checker
         $exist = false;
 
         $ids = array();
-
-        foreach ($this->getChildGroups($id) as $group) {
+        foreach ($this->manager->getChildGroups($id) as $group) {
             $ids[] = $group['id'];
         }
 
@@ -372,39 +329,14 @@ class Checker
         $this->permissionsForChecking = array();
         $this->userId = null;
     }
-
-    /**
-     * List all groups
-     */
-    public function getGroups()
+    
+    public function __call($name, $arguments)
     {
-        return $this->provider->getGroups();
-    }
-
-    /**
-     * List all children of a group
-     *
-     * @param string|int $id Group ID
-     * @param boolean $selfinclude Should we return also the group with provided id
-     * @param boolean $recursive Should we return also child of child groups
-     * @return array List of children groups
-     */
-    public function getChildGroups($id, $selfinclude = true, $recursive = true)
-    {
-        $groups = $this->getGroups();
-
-        $childs = array();
-        foreach ($groups as $group) {
-            if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
-                $childs[$group['id']] = $group;
-
-                if ($recursive && $group['id'] != $id) {
-                    $childs = array_merge($childs, $this->getChildGroups($group['id']));
-                }
-            }
+        if (method_exists($this->manager, $name)) {
+            return call_user_func_array(array($this->manager, $name), $arguments);
         }
-
-        return $childs;
+        
+        $this->throwError('Method "'.$name.'" not exist neither in Acl nor in Acl Manager.');
     }
 
 }

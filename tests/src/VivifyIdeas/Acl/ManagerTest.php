@@ -17,7 +17,7 @@ class ManagerTest extends Orchestra\Testbench\TestCase
     protected function getPackageAliases()
     {
         return array(
-            'AclManager' => 'VivifyIdeas\Acl\Facades\Manager',
+            'Acl' => 'VivifyIdeas\Acl\Facades\Acl',
         );
     }
 
@@ -26,7 +26,7 @@ class ManagerTest extends Orchestra\Testbench\TestCase
      */
     public function testReloadPermissions()
     {
-        $this->assertEquals(array(), AclManager::reloadPermissions(true));
+        $this->assertEquals(array(), Acl::reloadPermissions(true));
     }
 
     public function testReloadGroups()
@@ -43,7 +43,7 @@ class ManagerTest extends Orchestra\Testbench\TestCase
 
         );
 
-        $this->assertEquals($expected, AclManager::reloadGroups());
+        $this->assertEquals($expected, Acl::reloadGroups());
     }
 
     public function testGetAllPermissionsGrouped()
@@ -169,9 +169,9 @@ class ManagerTest extends Orchestra\Testbench\TestCase
             )
         );
 
-        $actual = AclManager::getAllPermissionsGrouped();
+        $actual = Acl::getAllPermissionsGrouped();
 
-        $this->assertEquals($expected, AclManager::getAllPermissionsGrouped());
+        $this->assertEquals($expected, Acl::getAllPermissionsGrouped());
     }
 
 

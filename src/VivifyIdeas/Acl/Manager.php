@@ -10,10 +10,53 @@ use Illuminate\Support\Facades\Config;
 class Manager
 {
     private $provider;
+    private $allPermissions = array();
+    private $cached = array();
 
     public function __construct(PermissionsProviderAbstract $provider)
     {
         $this->provider = $provider;
+        
+        // set system default permissions
+        $this->allPermissions = $this->provider->getAllPermissions();
+    }
+    
+    public function getUserPermissions($userId)
+    {
+        if (!isset($this->cached[$userId])) {
+            // get user permissions
+            $userPermissions = $this->provider->getUserPermissions($userId);
+            
+            $permissions = array();
+    
+            // get all permissions
+            foreach ($this->allPermissions as $permission) {
+                $permission['allowed_ids'] = null;
+                $permission['excluded_ids'] = null;
+                unset($permission['name']);
+    
+                $permissions[$permission['id']] = $permission;
+            }
+    
+            // overwrite with user permissions
+            foreach ($userPermissions as $userPermission) {
+                if (@$userPermission['allowed'] === null) {
+                    // allowed is not set, so use from system default
+                    unset($userPermission['allowed']);
+                }
+    
+                $temp = $permissions[$userPermission['id']];
+    
+                $temp = array_merge($temp, $userPermission);
+    
+                $permissions[$userPermission['id']] = $temp;
+            }
+    
+            // set finall permissions for particular user
+            $this->cached[$userId] = $permissions;
+        }
+    
+        return $this->cached[$userId];
     }
 
     public function reloadPermissions($onlySystemPermissions = false)
@@ -224,6 +267,38 @@ class Manager
         return $groups;
     }
 
-
+    /**
+     * List all groups
+     */
+    public function getGroups()
+    {
+        return $this->provider->getGroups();
+    }
+    
+    /**
+     * List all children of a group
+     *
+     * @param string|int $id Group ID
+     * @param boolean $selfinclude Should we return also the group with provided id
+     * @param boolean $recursive Should we return also child of child groups
+     * @return array List of children groups
+     */
+    public function getChildGroups($id, $selfinclude = true, $recursive = true)
+    {
+        $groups = $this->getGroups();
+    
+        $childs = array();
+        foreach ($groups as $group) {
+            if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
+                $childs[$group['id']] = $group;
+    
+                if ($recursive && $group['id'] != $id) {
+                    $childs = array_merge($childs, $this->getChildGroups($group['id']));
+                }
+            }
+        }
+    
+        return $childs;
+    }
 
 }

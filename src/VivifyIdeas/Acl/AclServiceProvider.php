@@ -27,12 +27,7 @@ class AclServiceProvider extends ServiceProvider {
 
 		$this->app->bind('Acl', function() use ($provider) {
 		    // default permissions providers is Eloquent provider
-		    return new Checker(new $provider);
-		});
-
-		$this->app->bind('AclManager', function() use ($provider) {
-		    // default permissions providers is Eloquent provider
-		    return new Manager(new $provider);
+		    return new Acl(new $provider);
 		});
 	}
 

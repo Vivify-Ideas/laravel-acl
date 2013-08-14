@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Test class for Acl\Checker
+ * Test class for Acl\Acl
  *
  * @group acl
  * @group acl.checker
  */
-class CheckerTest extends Orchestra\Testbench\TestCase
+class AclTest extends Orchestra\Testbench\TestCase
 {
 
     protected function getPackageProviders()
@@ -17,7 +17,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
     protected function getPackageAliases()
     {
         return array(
-            'Acl' => 'VivifyIdeas\Acl\Facades\Checker',
+            'Acl' => 'VivifyIdeas\Acl\Facades\Acl',
         );
     }
 
@@ -191,7 +191,7 @@ class CheckerTest extends Orchestra\Testbench\TestCase
     /**
      * Testing checkGroup method
      *
-     * @group acl.checker.group
+     * @group acl.acl.group
      */
     public function testCheckGroup()
     {
