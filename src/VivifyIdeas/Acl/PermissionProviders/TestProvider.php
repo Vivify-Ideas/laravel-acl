@@ -128,7 +128,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             ),
             array(
                 'id' => 'SUPERADMIN_PRIVILEGES',
-                'name' => 'Administrator Privileges',
+                'name' => 'Administrator Super Privileges',
                 'route' => null,
                 'parent_id' => null
             ),

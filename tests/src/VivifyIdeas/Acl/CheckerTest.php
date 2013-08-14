@@ -164,6 +164,9 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         $this->assertFalse(Acl::user(2)->checkRoute('GET', '/users/99'));
 
         $this->assertTrue(Acl::user(1986)->checkRoute('GET', '/users/99'));
+        
+        $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin'));
+        $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin/products'));
     }
 
     /**
@@ -239,11 +242,12 @@ class CheckerTest extends Orchestra\Testbench\TestCase
 
     public function testGetChildGroups()
     {
-        $this->assertEquals(3, count(Acl::getChildGroups('ADMIN_PRIVILEGES')));
-        $this->assertEquals(2, count(Acl::getChildGroups('ADMIN_PRIVILEGES', false)));
+        $this->assertEquals(5, count(Acl::getChildGroups('ADMIN_PRIVILEGES')));
+        $this->assertEquals(4, count(Acl::getChildGroups('ADMIN_PRIVILEGES', false)));
+        $this->assertEquals(3, count(Acl::getChildGroups('ADMIN_PRIVILEGES', false, false)));
 
         $res = Acl::getChildGroups('ADMIN_PRIVILEGES', false);
-        $this->assertTrue(isset($res['MANAGE_PRODUCTS']) && isset($res['MANAGE_USERS']));
+        $this->assertTrue(isset($res['MANAGE_PRODUCTS']) && isset($res['MANAGE_USERS']) && isset($res['MANAGE_SPEC_USER']));
     }
 
     /**

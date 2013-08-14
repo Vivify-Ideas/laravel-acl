@@ -172,9 +172,11 @@ class Checker
                     return $allowed;
                 }
             } else {
-                if (($allowed = $this->parseRoute($item['route'], $route, $httpMethod, $item)) !== null) {
-                    $this->clean();
-                    return $allowed;
+                if (!empty($item['route'])) {
+                    if (($allowed = $this->parseRoute($item['route'], $route, $httpMethod, $item)) !== null) {
+                        $this->clean();
+                        return $allowed;
+                    }
                 }
             }
         }
@@ -375,12 +377,14 @@ class Checker
     }
 
     /**
-     *
+     * List all children of a group
+     * 
      * @param string|int $id Group ID
-     * @param boolean $selfinclude Should that group also be returned
-     * @return array
+     * @param boolean $selfinclude Should we return also the group with provided id
+     * @param boolean $recursive Should we return also child of child groups 
+     * @return array List of children groups
      */
-    public function getChildGroups($id, $selfinclude = true)
+    public function getChildGroups($id, $selfinclude = true, $recursive = true)
     {
         $groups = $this->getGroups();
 
@@ -388,6 +392,10 @@ class Checker
         foreach ($groups as $group) {
             if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
                 $childs[$group['id']] = $group;
+                
+                if ($recursive && $group['id'] != $id) {
+                    $childs = array_merge($childs, $this->getChildGroups($group['id']));
+                }
             }
         }
 
