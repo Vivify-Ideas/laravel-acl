@@ -31,7 +31,10 @@ class Acl
         $this->userId = $userId;
         return $this;
     }
-    
+
+    /**
+     * Set authenticated or guest user to be current user.
+     */
     public function currentUser()
     {
         if (Auth::user()) {
@@ -65,6 +68,11 @@ class Acl
         return $this;
     }
 
+    /**
+     * Detect is current user superuser.
+     *
+     * @return boolean
+     */
     public function isSuperuser()
     {
         if (!$this->userId) {
@@ -75,6 +83,11 @@ class Acl
         return ($this->userId !== null &&  in_array($this->userId, Config::get('acl::superusers')));
     }
 
+    /**
+     * Return array of superusers IDs
+     *
+     * @return array
+     */
     public function superusers()
     {
         return Config::get('acl::superusers');
@@ -91,7 +104,7 @@ class Acl
             // if user id is not set, try to get authenticated user
             $this->currentUser();
         }
-        
+
         return $this->manager->getUserPermissions($this->userId);
     }
 
@@ -107,8 +120,7 @@ class Acl
     public function checkRoute($httpMethod, $route)
     {
         if ($this->isSuperuser()) {
-            $this->clean();
-            return true;
+            return $this->end(true);
         }
 
         $groups = (array) $this->manager->getGroups();
@@ -126,21 +138,18 @@ class Acl
                 }
 
                 if ($allowed !== null) {
-                    $this->clean();
-                    return $allowed;
+                    return $this->end($allowed);
                 }
             } else {
                 if (!empty($item['route'])) {
                     if (($allowed = $this->parseRoute($item['route'], $route, $httpMethod, $item)) !== null) {
-                        $this->clean();
-                        return $allowed;
+                        return $this->end($allowed);
                     }
                 }
             }
         }
 
-        $this->clean();
-        return true;
+        return $this->end(true);
     }
 
     /**
@@ -208,8 +217,7 @@ class Acl
     public function check()
     {
         if ($this->isSuperuser()) {
-            $this->clean();
-            return true;
+            return $this->end(true);
         }
 
         $allowed = null;
@@ -266,16 +274,20 @@ class Acl
             }
         }
 
-        $this->clean();
-
-        return $allowed;
+        return $this->end($allowed);
     }
 
+    /**
+     * Check if current user have permission to access specific group.
+     *
+     * @param string $id
+     *
+     * @return boolean
+     */
     public function checkGroup($id)
     {
         if ($this->isSuperuser()) {
-            $this->clean();
-            return true;
+            return $this->end(true);
         }
 
         $exist = false;
@@ -287,24 +299,28 @@ class Acl
 
         if (empty($ids)) {
             // route does not exist
-            $this->clean();
-            return true;
+            return $this->end(true);
         }
 
         foreach ($this->getUserPermissions() as $permission) {
             if (in_array(@$permission['group_id'], $ids)) {
                 $exist = true;
                 if ($permission['allowed'] || !empty($permission['allowed_ids'])) {
-                    $this->clean();
-                    return true;
+                    return $this->end(true);
                 }
             }
         }
 
-        $this->clean();
-        return !$exist;
+        return $this->end(!$exist);
     }
 
+    /**
+     * Do additonal stuff before returning is permission allowed.
+     *
+     * @param boolean $return
+     *
+     * @return boolean
+     */
     private function end($return)
     {
         $this->clean();
@@ -329,13 +345,13 @@ class Acl
         $this->permissionsForChecking = array();
         $this->userId = null;
     }
-    
+
     public function __call($name, $arguments)
     {
         if (method_exists($this->manager, $name)) {
             return call_user_func_array(array($this->manager, $name), $arguments);
         }
-        
+
         $this->throwError('Method "'.$name.'" not exist neither in Acl nor in Acl Manager.');
     }
 
