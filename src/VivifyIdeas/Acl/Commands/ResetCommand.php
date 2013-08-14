@@ -31,9 +31,9 @@ class ResetCommand extends Command
 	 */
 	public function fire()
 	{
-		\AclManager::reloadPermissions();
+		\Acl::reloadPermissions();
 
-		\AclManager::reloadGroups();
+		\Acl::reloadGroups();
 
 		$this->info('ACL permissions successful reseted!');
 	}

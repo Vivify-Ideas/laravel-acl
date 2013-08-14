@@ -12,7 +12,7 @@ class Group extends Eloquent
 {
     protected $table = 'acl_groups';
 
-    protected $fillable = array('id', 'name', 'parent_id');
+    protected $fillable = array('id', 'name', 'route', 'parent_id');
 
     public $timestamps = false;
 

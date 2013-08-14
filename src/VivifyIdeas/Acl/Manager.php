@@ -123,10 +123,10 @@ class Manager
         foreach ($groups as $group) {
             if (empty($group['children'])) {
                 $newGroups[$group['id']] = $parentGroup;
-                $this->insertGroup($group['id'], $group['name'], $parentGroup);
+                $this->insertGroup($group['id'], $group['name'], @$group['route'], $parentGroup);
             } else {
                 $newGroups[$group['id']] = $parentGroup;
-                $this->insertGroup($group['id'], $group['name'], $parentGroup);
+                $this->insertGroup($group['id'], $group['name'], @$group['route'], $parentGroup);
                 $newGroups = array_merge(
                     $newGroups,
                     $this->reloadGroups($group['id'], $group['children'])
@@ -137,9 +137,9 @@ class Manager
         return $newGroups;
     }
 
-    public function insertGroup($id, $name, $parentId = null)
+    public function insertGroup($id, $name, $route = null, $parentId = null)
     {
-        return $this->provider->insertGroup($id, $name, $parentId);
+        return $this->provider->insertGroup($id, $name, $route, $parentId);
     }
 
     public function deleteAllGroups()

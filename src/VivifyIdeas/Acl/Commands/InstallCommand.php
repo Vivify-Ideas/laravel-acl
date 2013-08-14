@@ -83,7 +83,7 @@ class InstallCommand extends Command
 				$table->string('route');
 				$table->boolean('resource_id_required');
 				$table->string('name');
-				$table->string('group_id')->nullable()->default(null);
+				$table->string('group_id')->nullable();
 			});
 		}
 
@@ -92,9 +92,9 @@ class InstallCommand extends Command
 				$table->increments('id');
 				$table->string('permission_id')->index();
 				$table->integer('user_id')->index();
-				$table->boolean('allowed')->nullable()->default(null);
-				$table->string('allowed_ids')->nullable()->default(null);
-				$table->string('excluded_ids')->nullable()->default(null);
+				$table->boolean('allowed')->nullable();
+				$table->string('allowed_ids')->nullable();
+				$table->string('excluded_ids')->nullable();
 			});
 		}
 
@@ -102,7 +102,8 @@ class InstallCommand extends Command
 			Schema::create('acl_groups', function(Blueprint $table) {
 				$table->string('id')->primary();
 				$table->string('name');
-				$table->string('parent_id')->index()->nullable()->default(null);
+				$table->string('route')->nullable();
+				$table->string('parent_id')->index()->nullable();
 			});
 		}
 

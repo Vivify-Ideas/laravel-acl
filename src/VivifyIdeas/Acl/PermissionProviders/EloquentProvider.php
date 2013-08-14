@@ -152,11 +152,12 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         return Group::all()->toArray();
     }
 
-    public function insertGroup($id, $name, $parentId = null)
+    public function insertGroup($id, $name, $route = null, $parentId = null)
     {
         return Group::create(array(
             'id' => $id,
             'name' => $name,
+            'route' => $route,
             'parent_id' => $parentId
         ))->toArray();
     }

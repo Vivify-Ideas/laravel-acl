@@ -112,7 +112,7 @@ abstract class PermissionsProviderAbstract
 
     public abstract function getGroups();
     
-    public abstract function insertGroup($id, $name, $parentId = null);
+    public abstract function insertGroup($id, $name, $route = null, $parentId = null);
 
     public abstract function deleteAllGroups();
 

@@ -31,9 +31,9 @@ class UpdateCommand extends Command
 	 */
 	public function fire()
 	{
-		\AclManager::reloadPermissions(true);
+		\Acl::reloadPermissions(true);
 
-		\AclManager::reloadGroups();
+		\Acl::reloadGroups();
 
 		$this->info('ACL permissions successful updated!');
 	}
