@@ -184,6 +184,30 @@ Here is the list of all artisan commands:
 - ```acl:update``` Update all ACL permissions from config file.
 - ```acl:reset``` Reset all ACL permissions. This will delete both user and system permissions and install permissions from config file
 
+### Add Acl Filter To Your Application
+
+Now we need to add appropriate filter to application and to set usage in `routes.php` file.
+
+You can add this filter to your `filters.php` file and adjust it by your own needs:
+
+```php
+Route::filter('acl', function($route, $request)
+{
+    if (!Acl::checkRoute($request->server('REQUEST_METHOD'), $request->server('REQUEST_URI'))) {
+         App::abort(403);
+    }
+});
+```
+
+And then in `routes.php` use this filter according to your needs
+
+```php
+Route::group(array('before' => 'acl', 'prefix' => '/admin'), function()
+{
+...
+});
+```
+
 ### Checking permissions
 
 Here are few ways how to check user permissions:
