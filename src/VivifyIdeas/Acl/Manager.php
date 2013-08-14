@@ -16,49 +16,63 @@ class Manager
     public function __construct(PermissionsProviderAbstract $provider)
     {
         $this->provider = $provider;
-        
+
         // set system default permissions
         $this->allPermissions = $this->provider->getAllPermissions();
     }
-    
+
+    /**
+     * Get user permissions (together with system permissions)
+     *
+     * @param integer $userId
+     *
+     * @return array
+     */
     public function getUserPermissions($userId)
     {
         if (!isset($this->cached[$userId])) {
             // get user permissions
             $userPermissions = $this->provider->getUserPermissions($userId);
-            
+
             $permissions = array();
-    
+
             // get all permissions
             foreach ($this->allPermissions as $permission) {
                 $permission['allowed_ids'] = null;
                 $permission['excluded_ids'] = null;
                 unset($permission['name']);
-    
+
                 $permissions[$permission['id']] = $permission;
             }
-    
+
             // overwrite with user permissions
             foreach ($userPermissions as $userPermission) {
                 if (@$userPermission['allowed'] === null) {
                     // allowed is not set, so use from system default
                     unset($userPermission['allowed']);
                 }
-    
+
                 $temp = $permissions[$userPermission['id']];
-    
+
                 $temp = array_merge($temp, $userPermission);
-    
+
                 $permissions[$userPermission['id']] = $temp;
             }
-    
+
             // set finall permissions for particular user
             $this->cached[$userId] = $permissions;
         }
-    
+
         return $this->cached[$userId];
     }
 
+    /**
+     * Reload system permission from config file
+     *
+     * @param boolean $onlySystemPermissions
+     *
+     * @return array Old permissions that not exists anymore
+     */
     public function reloadPermissions($onlySystemPermissions = false)
     {
         $permissions = Config::get('acl::permissions');
@@ -108,6 +122,14 @@ class Manager
         return $forDelete;
     }
 
+    /**
+     * Reload groups from config file into DB
+     *
+     * @param string $parentGroup
+     * @param array $groups
+     *
+     * @return type
+     */
     public function reloadGroups($parentGroup = null, $groups = null)
     {
         if (empty($groups)) {
@@ -137,16 +159,35 @@ class Manager
         return $newGroups;
     }
 
+    /**
+     * Insert new group with specific provider
+     *
+     * @param string $id
+     * @param string $name
+     * @param array|string $route
+     * @param type $parentId
+     *
+     * @return type
+     */
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
         return $this->provider->insertGroup($id, $name, $route, $parentId);
     }
 
+    /**
+     * Delete all groups using provider.
+     */
     public function deleteAllGroups()
     {
         return $this->provider->deleteAllGroups();
     }
 
+    /**
+     * Update user permissions (user permissions needs to exist).
+     *
+     * @param integer $userId
+     * @param array $permissions
+     */
     public function updateUserPermissions($userId, array $permissions)
     {
         foreach ($permissions as $permission) {
@@ -160,48 +201,110 @@ class Manager
         }
     }
 
+    /**
+     * Delete all system permissions
+     */
     public function deleteAllPermissions()
     {
         return $this->provider->deleteAllPermissions();
     }
 
+    /**
+     * Delete all users permissions
+     */
     public function deleteAllUsersPermissions()
     {
         return $this->provider->deleteAllUsersPermissions();
     }
 
+    /**
+     * Create new system permission
+     *
+     * @param integer $id
+     * @param boolean $allowed
+     * @param string|array $route
+     * @param boolean $resourceIdRequired
+     * @param string $name
+     * @param string $groupId
+     */
     public function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null)
     {
         return $this->provider->createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId);
     }
 
+    /**
+     * Remove system permission
+     *
+     * @param string $id
+     */
     public function removePermission($id)
     {
         return $this->provider->removePermission($id);
     }
 
+    /**
+     * Assign system permission to the specific user.
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     * @param boolean $allowed
+     * @param array $allowedIds
+     * @param array $excludedIds
+     */
     public function assignPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
         return $this->provider->assignPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
     }
 
+    /**
+     * Remove permission from the user.
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     */
     public function removeUserPermission($userId = null, $permissionId)
     {
         return $this->provider->removeUserPermission($userId, $permissionId);
     }
 
+    /**
+     * Update user permission (only if that user permission exist).
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     * @param boolean $allowed
+     * @param array $allowedIds
+     * @param array $excludedIds
+     */
     public function updateUserPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
         return $this->provider->updateUserPermission($userId, $permissionId, $allowed, $allowedIds, $excludedIds);
     }
 
+    /**
+     * Get specific user permission
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     *
+     * @return array
+     */
     public function getUserPermission($userId, $permissionId)
     {
         return $this->provider->getUserPermission($userId, $permissionId);
     }
 
+    /**
+     * Set user permission. If permission exist update, otherwise create.
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     * @param boolean $allowed
+     * @param array $allowedIds
+     * @param array $excludedIds
+     */
     public function setUserPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
@@ -213,11 +316,24 @@ class Manager
         }
     }
 
+    /**
+     * Get all system permissions.
+     *
+     * @return array
+     */
     public function getAllPermissions()
     {
         return $this->provider->getAllPermissions();
     }
 
+    /**
+     * Get all permission placed into proper groups as children nodes.
+     *
+     * @param array $grouped
+     * @param array $groups
+     *
+     * @return array
+     */
     public function getAllPermissionsGrouped($grouped = null, $groups = null)
     {
         $permissions = null;
@@ -268,13 +384,13 @@ class Manager
     }
 
     /**
-     * List all groups
+     * List all groups (linear structure)
      */
     public function getGroups()
     {
         return $this->provider->getGroups();
     }
-    
+
     /**
      * List all children of a group
      *
@@ -286,18 +402,18 @@ class Manager
     public function getChildGroups($id, $selfinclude = true, $recursive = true)
     {
         $groups = $this->getGroups();
-    
+
         $childs = array();
         foreach ($groups as $group) {
             if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
                 $childs[$group['id']] = $group;
-    
+
                 if ($recursive && $group['id'] != $id) {
                     $childs = array_merge($childs, $this->getChildGroups($group['id']));
                 }
             }
         }
-    
+
         return $childs;
     }
 

@@ -146,27 +146,49 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     {
         return UserPermission::truncate();
     }
-    
+
+    /**
+     * @see parent description
+     */
     public function getGroups()
     {
-        return Group::all()->toArray();
+        $groups = Group::all()->toArray();
+
+        foreach ($groups as &$group) {
+            $routes = json_decode($group['route'], true);
+            if ($routes !== null) {
+                // if route is json encoded string
+                $group['route'] = $routes;
+            }
+        }
+
+        return $groups;
     }
 
+    /**
+     * @see parent description
+     */
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
         return Group::create(array(
             'id' => $id,
             'name' => $name,
-            'route' => $route,
+            'route' => is_array($route)? json_encode($route) : $route,
             'parent_id' => $parentId
         ))->toArray();
     }
 
+    /**
+     * @see parent description
+     */
     public function deleteAllGroups()
     {
         return Group::truncate();
     }
 
+    /**
+     * @see parent description
+     */
     public function getUserPermission($userId, $permissionId)
     {
         return UserPermission::where('user_id', '=', $userId)

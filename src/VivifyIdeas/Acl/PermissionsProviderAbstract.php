@@ -110,12 +110,36 @@ abstract class PermissionsProviderAbstract
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     );
 
+    /**
+     * List all groups (linear structure)
+     */
     public abstract function getGroups();
-    
+
+    /**
+     * Insert new group
+     *
+     * @param string $id
+     * @param string $name
+     * @param array|string $route
+     * @param type $parentId
+     *
+     * @return type
+     */
     public abstract function insertGroup($id, $name, $route = null, $parentId = null);
 
+    /**
+     * Delete all groups.
+     */
     public abstract function deleteAllGroups();
 
+    /**
+     * Get specific user permission
+     *
+     * @param integer $userId
+     * @param string $permissionId
+     *
+     * @return array
+     */
     public abstract function getUserPermission($userId, $permissionId);
 
 }
