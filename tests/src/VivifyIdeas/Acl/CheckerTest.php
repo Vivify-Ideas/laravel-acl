@@ -98,14 +98,6 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         }
 
         try {
-            Acl::permission('EDIT_USER', 2)->check();
-
-            $this->fail('Exception not thrown');
-        } catch (InvalidArgumentException $e) {
-            $this->assertEquals('No user ID specified', $e->getMessage());
-        }
-
-        try {
             Acl::user(3)->check();
 
             $this->fail('Exception not thrown');
@@ -239,6 +231,15 @@ class CheckerTest extends Orchestra\Testbench\TestCase
         $this->assertTrue(Acl::user(1986)->isSuperuser());
 
         $this->assertEquals(array(1986), Acl::superusers());
+    }
+    
+    public function testGetChildGroups()
+    {
+        $this->assertEquals(3, count(Acl::getChildGroups('ADMIN_PRIVILEGES')));
+        $this->assertEquals(2, count(Acl::getChildGroups('ADMIN_PRIVILEGES', false)));
+        
+        $res = Acl::getChildGroups('ADMIN_PRIVILEGES', false);
+        $this->assertTrue(isset($res['MANAGE_PRODUCTS']) && isset($res['MANAGE_USERS']));
     }
 
     /**

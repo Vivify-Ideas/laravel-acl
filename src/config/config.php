@@ -68,28 +68,35 @@ return array(
     |--------------------------------------------------------------------------
     |
     | Every permission can belong to some group. You can have groups that
-    | belongs to other group.
+    | belongs to other group. Every group can have a route.
     |
     | Example:
     | array(
     |     'id' => 'ADMIN_PRIVILEGES',
     |     'name' => 'Administrator Privileges',
+    |     'route' => 'GET:/admin/(\d+)',
+    |
     |     'children' => array(
     |         array(
     |             'id' => 'MANAGE_STUFF',
-    |             'name' => 'Manage Stuff'
+    |             'name' => 'Manage Stuff',
+    |             'route' => 'GET:/resource/(\d+)'
     |         ),
     |         array(
     |             'id' => 'MANAGE_PRODUCTS',
-    |             'name' => 'Manage Products'
+    |             'name' => 'Manage Products',
+    |             'route' => 'GET:/resource/(\d+)'
     |         ),
     |         array(
     |             'id' => 'MANAGE_USERS',
     |             'name' => 'Manage Users',
+    |             'route' => 'GET:/resource/(\d+)',
+    |              
     |             'children' => array(
     |                 array(
     |                     'id' => 'MANAGE_SPEC_USER',
-    |                     'name' => 'Manage spec user'
+    |                     'name' => 'Manage spec user',
+    |                     'route' => 'GET:/resource/(\d+)'
     |                 )
     |             )
     |         )

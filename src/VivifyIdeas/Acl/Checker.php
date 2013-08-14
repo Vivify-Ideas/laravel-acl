@@ -152,13 +152,17 @@ class Checker
             $this->clean();
             return true;
         }
-
-        foreach ($this->getUserPermissions() as $userPermission) {
-            if (is_array($userPermission['route'])) {
+        
+        $groups = (array) $this->getGroups();
+        $userPermissions = (array) $this->getUserPermissions();
+        
+        $list = array_merge($groups, $userPermissions);
+        foreach ($list as $item) {
+            if (is_array($item['route'])) {
                 $allowed = null;
 
-                foreach ($userPermission['route'] as $regExr) {
-                    if (($temp = $this->parseRoute($regExr, $route, $httpMethod, $userPermission['id'])) !== null) {
+                foreach ($item['route'] as $regExr) {
+                    if (($temp = $this->parseRoute($regExr, $route, $httpMethod, $item)) !== null) {
                         $allowed = $allowed || $temp;
                     }
                 }
@@ -168,7 +172,7 @@ class Checker
                     return $allowed;
                 }
             } else {
-                if (($allowed = $this->parseRoute($userPermission['route'], $route, $httpMethod, $userPermission['id'])) !== null) {
+                if (($allowed = $this->parseRoute($item['route'], $route, $httpMethod, $item)) !== null) {
                     $this->clean();
                     return $allowed;
                 }
@@ -185,15 +189,22 @@ class Checker
      * @param string $regExr
      * @param string $route
      * @param string $httpMethod
-     * @param string $permission
+     * @param array $item Permission or Group array
      *
      * @return boolean|null
      */
-    private function parseRoute($regExr, $route, $httpMethod, $permission)
+    private function parseRoute($regExr, $route, $httpMethod, $item)
     {
         if (preg_match('#' . $regExr . '#', strtoupper($httpMethod) . ':' . $route, $matches)) {
             $resourceId = isset($matches[1])? $matches[1] : null;
-            return $this->permission($permission, $resourceId)->check();
+            
+            if (isset($item['allowed'])) {
+                // this is permission
+                return $this->permission($item['id'], $resourceId)->check();
+            } else {
+                // this is group
+                return $this->checkGroup($item['id']);
+            }
         }
 
         return null;
@@ -342,6 +353,32 @@ class Checker
         $this->userId = null;
     }
 
-
-
+    /**
+     * List all groups
+     */
+    public function getGroups()
+    {
+        return $this->provider->getGroups();
+    }
+    
+    /**
+     * 
+     * @param string|int $id Group ID
+     * @param boolean $selfinclude Should that group also be returned
+     * @return array
+     */
+    public function getChildGroups($id, $selfinclude = true)
+    {
+        $groups = $this->getGroups();
+        
+        $childs = array();
+        foreach ($groups as $group) {
+            if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
+                $childs[$group['id']] = $group;
+            }
+        }
+        
+        return $childs;
+    }
+    
 }

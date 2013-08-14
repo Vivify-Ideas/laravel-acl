@@ -86,6 +86,30 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     {
 
     }
+    
+    public function getGroups()
+    {
+        return array(
+            array(
+                'id' => 'ADMIN_PRIVILEGES',
+                'name' => 'Administrator Privileges',
+                'route' => 'GET:/admin.*',
+                'parent_id' => null
+            ),
+            array(
+                'id' => 'MANAGE_PRODUCTS',
+                'name' => 'Manage Products',
+                'route' => 'GET:/admin/products.*',
+                'parent_id' => 'ADMIN_PRIVILEGES'
+            ),
+            array(
+                'id' => 'MANAGE_USERS',
+                'name' => 'Manage Users',
+                'route' => 'GET:/admin/users.*',
+                'parent_id' => 'ADMIN_PRIVILEGES'
+            ),
+        );
+    }
 
     public function insertGroup($id, $name, $parentId = null)
     {

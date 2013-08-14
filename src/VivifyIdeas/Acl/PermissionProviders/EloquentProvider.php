@@ -146,6 +146,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     {
         return UserPermission::truncate();
     }
+    
+    public function getGroups()
+    {
+        return Group::all()->toArray();
+    }
 
     public function insertGroup($id, $name, $parentId = null)
     {
