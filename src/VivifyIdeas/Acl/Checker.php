@@ -96,7 +96,8 @@ class Checker
             if (Auth::user()) {
                 $this->user(Auth::user()->id);
             } else {
-                $this->throwError('No user ID specified');
+                // guest user
+                $this->user(Config::get('acl::guestuser'));
             }
         }
 
