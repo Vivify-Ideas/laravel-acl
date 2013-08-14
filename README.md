@@ -3,6 +3,15 @@ Laravel ACL
 
 ACL component for Laravel 4.
 
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Provider](#provider)
+  - [Super users](#superusers)
+  - [Guest user](#guestuser)
+  - [Permissions](#permissions)
+  - [Groups](#groups)
+- [Usage](#usage)
+
 ## Installation
 
 First you need to install this package through Composer. Edit your project's `composer.json` file to require `vivify-ideas/acl`.
@@ -26,11 +35,10 @@ Once this operation completes, you will need to add the service provider into yo
   'VivifyIdeas\Acl\AclServiceProvider
 ```
 
-And also add two new aliases into aliases array.
+And also add new alias into aliases array.
 
 ```
-  'Acl'        => 'VivifyIdeas\Acl\Facades\Checker',
-  'AclManager' => 'VivifyIdeas\Acl\Facades\Manager',
+  'Acl' => 'VivifyIdeas\Acl\Facades\Acl',
 ```
 
 Last step is to create main structure for keeping ACL. You can easy done this by running `artisan` command:
@@ -43,15 +51,115 @@ This will use current permission provider (`Eloquent`) and create DB structure f
 
 That's it! You're all set to go.
 
-## Usage
+## Configuration
+
+After runing `artisan acl:install` command, you will get a new config file in `app/config/packages/vivify-ideas/acl/config.php`.
+
+There you will notice 5 sections.
+
+### Provider
+
+```php
+'provider' => 'eloquent'
+```
 
 Main feature of this ACL component is `PermissionsProvider`. Permission provider represent class that handle permissions. Currently there is only one permission provider `Eloquent` (you can assume that permissions will be stored in DB that you specified on your project).
 
-First step is to fill available permission for your application. You can do this by overwriting ACL default config file (`app/config/packages/vivify-ideas/acl/config.php`).
+### SuperUsers
 
-In the config file there is `permissions` section that you need to put all permissions that exist in your system in `permissions` section.
+```php
+'superusers' => array()
+```
 
-When you are satisfy how your permissions look like, run next artisan command:
+Here you can define user IDs that will have superuser rights. This users will be able allowed all permissions.
+
+### GuestUser
+
+```php
+'guestuser' => 0
+```
+
+Put here ID that will used for setting permissions to guest users.
+
+### Permissions
+
+```php
+'permissions' => array()
+```
+
+Here you need to put all permissions that exist in your system. Permissions need to be in next format
+
+```php
+array(
+  array(
+    'id' => 'PERMISSION_ID',
+    'allowed' => true|false,
+    'route' => array('GET:/resource/(\d+)/edit', 'PUT:/resource/(\d+)'),
+    'resource_id_required' => true|false,
+    'name' => 'Permission name',
+    'group_id' => 'GROUP_ID_1', // optional
+  ), array(
+    'id' => 'PERMISSION_ID_2',
+    'allowed' => true|false,
+    'route' => 'GET:/resource/(\d+)',
+    'resource_id_required' => true|false,
+    'name' => 'Permission 2 name'
+    'group_id' => 'GROUP_ID_2', // optional
+  )
+ )
+```
+
+### Groups
+
+```php
+'groups' => array()
+```
+
+Every permission can belong to some group. You can have groups that belongs to other group. Every group can have a route. Use next format:
+
+```php
+array(
+  array(
+    'id' => 'ADMIN_PRIVILEGES',
+    'name' => 'Administrator Privileges',
+    'route' => 'GET:/admin/(\d+)',
+
+    'children' => array(
+      array(
+        'id' => 'MANAGE_STUFF',
+        'name' => 'Manage Stuff',
+        'route' => 'GET:/resource/(\d+)'
+      ),
+      array(
+        'id' => 'MANAGE_PRODUCTS',
+        'name' => 'Manage Products',
+        'route' => 'GET:/resource/(\d+)'
+      ),
+      array(
+        'id' => 'MANAGE_USERS',
+        'name' => 'Manage Users',
+        'route' => 'GET:/resource/(\d+)',
+
+        'children' => array(
+          array(
+            'id' => 'MANAGE_SPEC_USER',
+            'name' => 'Manage spec user',
+            'route' => 'GET:/resource/(\d+)'
+          )
+        )
+      )
+    )
+  ),
+  array(
+    'id' => 'STUFF_PRIVILEGES',
+    'name' => 'Stuff Privileges',
+  )
+)
+```
+
+## Usage
+
+When you are satisfy how your configuration file look like, run next artisan command:
 
 ```
 php artisan acl:update
@@ -64,6 +172,15 @@ If you want to delete all permissions (including user permissions), and again re
 ```
 php artisan acl:reset
 ```
+
+### Available Artisan commands
+
+Here is the list of all artisan commands:
+
+- ```acl:install``` Create basic ACL table structure.
+- ```acl:install clean``` Delete all acl tables, reset config file to default version and again create basic ACL table structure.
+- ```acl:update``` Update all ACL permissions from config file.
+- ```acl:reset``` Reset all ACL permissions. This will delete both user and system permissions and install permissions from config file
 
 ### Checking permissions
 

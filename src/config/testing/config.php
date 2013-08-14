@@ -5,8 +5,6 @@ return array(
     'provider' => 'test',
 
     'superusers' => array(1986),
-    
-    'guestuser' => 0,
 
     'guestuser' => 0,
 
