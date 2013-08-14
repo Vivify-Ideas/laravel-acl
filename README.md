@@ -3,6 +3,8 @@ Laravel ACL
 
 ACL component for Laravel 4.
 
+[![Build Status](https://travis-ci.org/Vivify-Ideas/laravel-acl.png?branch=master)](https://travis-ci.org/Vivify-Ideas/laravel-acl)
+
 - [Installation](#installation)
 - [Configuration](#configuration)
   - [Provider](#provider)
