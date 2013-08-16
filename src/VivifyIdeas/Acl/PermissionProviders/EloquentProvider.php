@@ -19,28 +19,39 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         $userPermissions = UserPermission::where('user_id', '=', $userId)->get()->toArray();
 
         foreach ($userPermissions as &$permission) {
-            if ($permission['allowed'] === null) {
-                // allowed is not set, so use from system default
-                unset($permission['allowed']);
-            } else {
-                $permission['allowed'] = (bool) $permission['allowed'];
-            }
-
-            $permission['id'] = $permission['permission_id'];
-            unset($permission['permission_id']);
-
-            if ($permission['allowed_ids'] !== null) {
-                // create array from string - try to explode by ','
-                $permission['allowed_ids'] = explode(',', $permission['allowed_ids']);
-            }
-
-            if ($permission['excluded_ids'] !== null) {
-                // create array from string - try to explode by ','
-                $permission['excluded_ids'] = explode(',', $permission['excluded_ids']);
-            }
+            $permission = $this->parseUserPermission($permission);
         }
 
         return $userPermissions;
+    }
+
+    private function parseUserPermission(array $permission)
+    {
+        if (empty($permission)) {
+            return $permission;
+        }
+
+        if ($permission['allowed'] === null) {
+            // allowed is not set, so use from system default
+            unset($permission['allowed']);
+        } else {
+            $permission['allowed'] = (bool) $permission['allowed'];
+        }
+
+        $permission['id'] = $permission['permission_id'];
+        unset($permission['permission_id']);
+
+        if ($permission['allowed_ids'] != null) {
+            // create array from string - try to explode by ','
+            $permission['allowed_ids'] = explode(',', $permission['allowed_ids']);
+        }
+
+        if ($permission['excluded_ids'] != null) {
+            // create array from string - try to explode by ','
+            $permission['excluded_ids'] = explode(',', $permission['excluded_ids']);
+        }
+
+        return $permission;
     }
 
     /**
@@ -97,8 +108,8 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             'permission_id' => $permissionId,
             'user_id' => $userId,
             'allowed' => $allowed,
-            'allowed_ids' => ($allowedIds !== null)? implode(',', $allowedIds) : $allowedIds,
-            'excluded_ids' => ($excludedIds !== null)? implode(',', $excludedIds) : $excludedIds,
+            'allowed_ids' => (!empty($allowedIds))? implode(',', $allowedIds) : null,
+            'excluded_ids' => (!empty($excludedIds))? implode(',', $excludedIds) : null,
         ))->toArray();
     }
 
@@ -126,8 +137,8 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                             ->where('permission_id', '=', $permissionId)
                             ->update(array(
                                 'allowed' => $allowed,
-                                'allowed_ids' => ($allowedIds !== null)? implode(',', $allowedIds) : $allowedIds,
-                                'excluded_ids' => ($excludedIds !== null)? implode(',', $excludedIds) : $excludedIds,
+                                'allowed_ids' => (!empty($allowedIds))? implode(',', $allowedIds) : null,
+                                'excluded_ids' => (!empty($excludedIds))? implode(',', $excludedIds) : null,
                             ));
     }
 
@@ -191,9 +202,15 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function getUserPermission($userId, $permissionId)
     {
-        return UserPermission::where('user_id', '=', $userId)
+        $permission = UserPermission::where('user_id', '=', $userId)
                             ->where('permission_id', '=', $permissionId)
-                            ->get()->toArray();
+                            ->first();
+
+        if ($permission) {
+            return $this->parseUserPermission($permission->toArray());
+        }
+
+        return null;
     }
 
 }
