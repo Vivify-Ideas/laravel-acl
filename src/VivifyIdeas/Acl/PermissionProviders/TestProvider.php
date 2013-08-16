@@ -123,7 +123,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             array(
                 'id' => 'STUFF_PRIVILEGES',
                 'name' => 'Stuff Privileges',
-                'route' => null,
+                'route' => 'GET:/admin/stuff',
                 'parent_id' => null
             ),
             array(

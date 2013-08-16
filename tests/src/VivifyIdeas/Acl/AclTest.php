@@ -167,6 +167,8 @@ class AclTest extends Orchestra\Testbench\TestCase
         
         $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin'));
         $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin/products'));
+        $this->assertFalse(Acl::user(2)->checkRoute('GET', '/admin/stuff'));
+        $this->assertFalse(Acl::user(2)->checkRoute('GET', '/admin/stuff/create'));
     }
 
     /**

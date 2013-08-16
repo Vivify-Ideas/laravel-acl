@@ -127,29 +127,23 @@ class Acl
         $userPermissions = (array) $this->getUserPermissions();
 
         $list = array_merge($groups, $userPermissions);
+        
+        $allowed = true;
         foreach ($list as $item) {
-            if (is_array($item['route'])) {
-                $allowed = null;
-
+            if (!empty($item['route'])) {
+                if (!is_array($item['route'])) {
+                    $item['route'] = array($item['route']);
+                }
+                
                 foreach ($item['route'] as $regExr) {
                     if (($temp = $this->parseRoute($regExr, $route, $httpMethod, $item)) !== null) {
-                        $allowed = $allowed || $temp;
-                    }
-                }
-
-                if ($allowed !== null) {
-                    return $this->end($allowed);
-                }
-            } else {
-                if (!empty($item['route'])) {
-                    if (($allowed = $this->parseRoute($item['route'], $route, $httpMethod, $item)) !== null) {
-                        return $this->end($allowed);
+                        $allowed = $allowed && $temp;
                     }
                 }
             }
         }
 
-        return $this->end(true);
+        return $this->end($allowed);
     }
 
     /**
