@@ -193,7 +193,10 @@ You can add this filter to your `filters.php` file and adjust it by your own nee
 ```php
 Route::filter('acl', function($route, $request)
 {
-    if (!Acl::checkRoute($request->server('REQUEST_METHOD'), $request->server('REQUEST_URI'))) {
+    // we need this because laravel delete form sends POST request with {_method: 'DELETE'} as parameter
+    $method = $request->has('_method') ? $request->input('_method') : $request->server('REQUEST_METHOD');
+    
+    if (!Acl::checkRoute($method, $request->server('REQUEST_URI'))) {
          App::abort(403);
     }
 });
