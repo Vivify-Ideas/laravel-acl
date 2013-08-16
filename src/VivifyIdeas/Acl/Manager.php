@@ -323,7 +323,7 @@ class Manager
      */
     public function getAllPermissions()
     {
-        return $this->provider->getAllPermissions();
+        return $this->allPermissions;
     }
 
     /**

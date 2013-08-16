@@ -202,12 +202,22 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function getUserPermission($userId, $permissionId)
     {
-        $permission = UserPermission::where('user_id', '=', $userId)
-                            ->where('permission_id', '=', $permissionId)
-                            ->first();
+        if ($userId === null) {
+            // if user is not specified then return all user permissions with specific permission_id
+            $permissions = UserPermission::where('permission_id', '=', $permissionId)->get()->toArray();
+            foreach ($permissions as &$permission) {
+                $permission = $this->parseUserPermission($permission);
+            }
 
-        if ($permission) {
-            return $this->parseUserPermission($permission->toArray());
+            return $userPermissions;
+        } else {
+            $permission = UserPermission::where('user_id', '=', $userId)
+                                ->where('permission_id', '=', $permissionId)
+                                ->first();
+
+            if ($permission) {
+                return $this->parseUserPermission($permission->toArray());
+            }
         }
 
         return null;

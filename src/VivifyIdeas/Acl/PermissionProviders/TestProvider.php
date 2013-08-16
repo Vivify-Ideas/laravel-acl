@@ -153,7 +153,66 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     public function getUserPermission($userId, $permissionId)
     {
-
+        if ($userId === null) {
+            return array(
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 1,
+                    'allowed' => null,
+                    'allowed_ids' => array(2,3,4),
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 2,
+                    'allowed' => null,
+                    'allowed_ids' => array(5),
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 3,
+                    'allowed' => null,
+                    'allowed_ids' => array(2,5),
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 4,
+                    'allowed' => null,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 5,
+                    'allowed' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'EDIT_PRODUCT',
+                    'user_id' => 6,
+                    'allowed' => false,
+                    'allowed_ids' => array(2),
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'VIEW_PRODUCT',
+                    'user_id' => 1,
+                    'allowed' => false,
+                    'allowed_ids' => array(4),
+                    'excluded_ids' => null,
+                ),
+                array(
+                    'id' => 'VIEW_PRODUCT',
+                    'user_id' => 2,
+                    'allowed' => false,
+                    'allowed_ids' => null,
+                    'excluded_ids' => null,
+                ),
+            );
+        }
     }
 
 }

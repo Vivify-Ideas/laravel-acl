@@ -164,7 +164,7 @@ class AclTest extends Orchestra\Testbench\TestCase
         $this->assertFalse(Acl::user(2)->checkRoute('GET', '/users/99'));
 
         $this->assertTrue(Acl::user(1986)->checkRoute('GET', '/users/99'));
-        
+
         $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin'));
         $this->assertTrue(Acl::user(2)->checkRoute('GET', '/admin/products'));
         $this->assertFalse(Acl::user(2)->checkRoute('GET', '/admin/stuff'));
@@ -188,6 +188,28 @@ class AclTest extends Orchestra\Testbench\TestCase
             array(2, 3, 4),
             Acl::user(2)->permission('EDIT_PRODUCT')->permission('EDIT_USER')->getResourceIds()
         );
+    }
+
+    /**
+     * Testing getUserIds method
+     */
+    public function testGetUserIds()
+    {
+        $this->assertEquals(array(4), Acl::permission('EDIT_PRODUCT')->getUserIds());
+
+        $this->assertEquals(array(1, 3, 4, 6), Acl::permission('EDIT_PRODUCT', 2)->getUserIds());
+
+        $this->assertEquals(array(1, 4), Acl::permission('EDIT_PRODUCT', 3)->getUserIds());
+
+        $this->assertEquals(array(1, 4), Acl::permission('EDIT_PRODUCT', 4)->getUserIds());
+
+        $this->assertEquals(array(2, 3, 4), Acl::permission('EDIT_PRODUCT', 5)->getUserIds());
+
+        $this->assertEquals(array(1), Acl::permission('VIEW_PRODUCT', 4)->getUserIds());
+
+        $this->assertEquals(array(1, 3, 4), Acl::permission('VIEW_PRODUCT', 4)->permission('EDIT_PRODUCT', 5)->getUserIds());
+
+        $this->assertEquals(array(3, 4), Acl::permission('VIEW_PRODUCT', 44)->permission('EDIT_PRODUCT', 5)->getUserIds());
     }
 
     /**

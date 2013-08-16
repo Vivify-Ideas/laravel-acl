@@ -127,14 +127,14 @@ class Acl
         $userPermissions = (array) $this->getUserPermissions();
 
         $list = array_merge($groups, $userPermissions);
-        
+
         $allowed = true;
         foreach ($list as $item) {
             if (!empty($item['route'])) {
                 if (!is_array($item['route'])) {
                     $item['route'] = array($item['route']);
                 }
-                
+
                 foreach ($item['route'] as $regExr) {
                     if (($temp = $this->parseRoute($regExr, $route, $httpMethod, $item)) !== null) {
                         $allowed = $allowed && $temp;
@@ -201,6 +201,64 @@ class Acl
 
         $this->clean();
         return array_unique($ids);
+    }
+
+    /**
+     * Return user ids that can access setup permissions
+     *
+     * @return array
+     */
+    public function getUserIds()
+    {
+        // array of user ids that can access permission
+        $ids = array();
+
+        // array of user ids that can not access permission
+        $_ids = array();
+
+        // system permissions
+        $allPermissions = $this->manager->getAllPermissions();
+
+        foreach ($allPermissions as $key => $permission) {
+            unset($allPermissions[$key]);
+            $allPermissions[$permission['id']] = $permission;
+        }
+
+        foreach ($this->permissionsForChecking as $permissionId => $resourceId) {
+            $userPermissions = $this->manager->getUserPermission(null, $permissionId);
+
+            foreach ($userPermissions as $permission) {
+                if (@$permission['allowed'] === null) {
+                    $permission['allowed'] = $allPermissions[$permission['id']]['allowed'];
+                }
+
+                if ($permission['id'] == $permissionId) {
+                    if (empty($permission['allowed_ids']) && $permission['allowed']) {
+                        $ids[] = $permission['user_id'];
+                    }
+
+                    if (empty($permission['allowed_ids']) && $permission['allowed'] == false) {
+                        $_ids[] = $permission['user_id'];
+                    }
+
+                    if($resourceId !== null) {
+                        if (is_array($permission['allowed_ids']) && in_array($resourceId, $permission['allowed_ids'])) {
+                            $ids[] = $permission['user_id'];
+                        }
+
+                        if (is_array($permission['excluded_ids']) && in_array($resourceId, $permission['excluded_ids'])) {
+                            $_ids[] = $permission['user_id'];
+                        }
+                    }
+                }
+            }
+        }
+
+        $_ids = array_unique($_ids);
+        $ids = array_unique($ids);
+
+        // result formating
+        return $this->end(array_merge(array(), array_diff($ids, $_ids)));
     }
 
     /**
