@@ -209,7 +209,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 $permission = $this->parseUserPermission($permission);
             }
 
-            return $userPermissions;
+            return $permissions;
         } else {
             $permission = UserPermission::where('user_id', '=', $userId)
                                 ->where('permission_id', '=', $permissionId)
