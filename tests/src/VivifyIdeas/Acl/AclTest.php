@@ -173,20 +173,54 @@ class AclTest extends Orchestra\Testbench\TestCase
 
     /**
      * Testing getResourceIds method.
+     *
+     * @group acl.resource-ids
      */
     public function testGetResourceIds()
     {
-        $this->assertEquals(array(2, 3, 4), Acl::user(2)->permission('EDIT_USER')->getResourceIds()) ;
-        $this->assertEquals(array(9), Acl::user(2)->permission('EDIT_USER')->getResourceIds(false)) ;
-
-        $this->assertEmpty(Acl::user(2)->permission('EDIT_PRODUCT')->getResourceIds(false));
-        $this->assertEquals(array(2, 3, 4), Acl::user(2)->permission('EDIT_PRODUCT')->getResourceIds());
-
-        $this->assertEmpty(Acl::user(2)->permission('VIEW_PRODUCT')->getResourceIds());
+        $this->assertEquals(
+            array(
+                'allowed' => true,
+                'allowed_ids' => array(2, 3, 4),
+                'excluded_ids' => array(9)
+            ),
+            Acl::user(2)->permission('EDIT_USER')->getResourceIds()
+        );
 
         $this->assertEquals(
-            array(2, 3, 4),
+            array(
+                'allowed' => true,
+                'allowed_ids' => array(2,3,4),
+                'excluded_ids' => array()
+            ),
+            Acl::user(2)->permission('EDIT_PRODUCT')->getResourceIds()
+        );
+
+        $this->assertEquals(
+            array(
+                'allowed' => false,
+                'allowed_ids' => array(),
+                'excluded_ids' => array()
+            ),
+            Acl::user(2)->permission('VIEW_PRODUCT')->getResourceIds()
+        );
+
+        $this->assertEquals(
+            array(
+                'allowed' => true,
+                'allowed_ids' => array(2,3,4),
+                'excluded_ids' => array(9)
+            ),
             Acl::user(2)->permission('EDIT_PRODUCT')->permission('EDIT_USER')->getResourceIds()
+        );
+
+        $this->assertEquals(
+            array(
+                'allowed' => true,
+                'allowed_ids' => array(),
+                'excluded_ids' => array()
+            ),
+            Acl::user(1986)->permission('EDIT_PRODUCT')->permission('EDIT_USER')->getResourceIds()
         );
     }
 

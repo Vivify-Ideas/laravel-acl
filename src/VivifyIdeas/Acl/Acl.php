@@ -4,6 +4,7 @@ namespace VivifyIdeas\Acl;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Main ACL class for checking does user have some permissions.
@@ -176,31 +177,35 @@ class Acl
     /**
      * Get resource ids that user can (or not) access.
      *
-     * If you pass false as argument, then method will return
-     * resource ids that user can not access
-     *
-     * @param boolean $allowed
-     *
      * @return array
      */
-    public function getResourceIds($allowed = true)
+    public function getResourceIds()
     {
-        $ids = array();
+        $ids = array(
+            'allowed' => true,
+            'allowed_ids' => array(),
+            'excluded_ids' => array(),
+        );
+
+        if ($this->isSuperuser()) {
+            return $this->end($ids);
+        }
 
         $userPermissions = $this->getUserPermissions();
 
         foreach ($this->permissionsForChecking as $permission => $resourceIds) {
-            $tempPermission = $userPermissions[$permission];
+            $tempPermission = array(
+                'allowed' => $userPermissions[$permission]['allowed'],
+                'allowed_ids' => ($userPermissions[$permission]['allowed_ids'] === null)? array() : $userPermissions[$permission]['allowed_ids'],
+                'excluded_ids' => ($userPermissions[$permission]['excluded_ids'] === null)? array() : $userPermissions[$permission]['excluded_ids']
+            );
 
-            $key = ($allowed)? 'allowed_ids' : 'excluded_ids';
-
-            if (!empty($tempPermission[$key])) {
-                $ids = array_merge($ids, $tempPermission[$key]);
-            }
+            $ids['allowed'] = $ids['allowed'] && $tempPermission['allowed'];
+            $ids['allowed_ids'] = array_unique(array_merge($tempPermission['allowed_ids'], $ids['allowed_ids']));
+            $ids['excluded_ids'] = array_unique(array_merge($tempPermission['excluded_ids'], $ids['excluded_ids']));
         }
 
-        $this->clean();
-        return array_unique($ids);
+        return $this->end($ids);
     }
 
     /**
@@ -396,6 +401,42 @@ class Acl
     {
         $this->permissionsForChecking = array();
         $this->userId = null;
+    }
+
+    /**
+     * Append to the query additional where statements if needed.
+     *
+     * @param Illuminate\Database\Eloquent\Builder | Illuminate\Database\Query\Builder $query
+     * @param string $primaryKey
+     *
+     * @return Illuminate\Database\Eloquent\Builder|Illuminate\Database\Query\Builder
+     */
+    public function buildQuery($query, $primaryKey = 'id')
+    {
+        // get resource IDs
+        $ids = $this->getResourceIds();
+
+        if (empty($ids['allowed_ids']) && empty($ids['excluded_ids'])) {
+            if ($ids['allowed']) {
+                // alowed all
+                return $query;
+            } else {
+                // not allowed anything
+                return false;
+            }
+        }
+
+        // append excluded ids
+        if (!empty($ids['excluded_ids'])) {
+            $query->whereNotIn($primaryKey, $ids['excluded_ids']);
+        }
+
+        // append allowed ids
+        if (!empty($ids['allowed_ids'])) {
+            $query->whereIn($primaryKey, $ids['allowed_ids']);
+        }
+
+        return $query;
     }
 
     public function __call($name, $arguments)
