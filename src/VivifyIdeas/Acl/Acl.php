@@ -182,13 +182,17 @@ class Acl
     public function getResourceIds()
     {
         $ids = array(
-            'allowed' => true,
+            'allowed' => null,
             'allowed_ids' => array(),
             'excluded_ids' => array(),
         );
 
         if ($this->isSuperuser()) {
-            return $this->end($ids);
+            return $this->end( array(
+                'allowed' => true,
+                'allowed_ids' => array(),
+                'excluded_ids' => array(),
+            ));
         }
 
         $userPermissions = $this->getUserPermissions();
@@ -200,7 +204,7 @@ class Acl
                 'excluded_ids' => ($userPermissions[$permission]['excluded_ids'] === null)? array() : $userPermissions[$permission]['excluded_ids']
             );
 
-            $ids['allowed'] = $ids['allowed'] && $tempPermission['allowed'];
+            $ids['allowed'] = ($ids['allowed'] === null)? $tempPermission['allowed'] : $ids['allowed'] || $tempPermission['allowed'];
             $ids['allowed_ids'] = array_unique(array_merge($tempPermission['allowed_ids'], $ids['allowed_ids']));
             $ids['excluded_ids'] = array_unique(array_merge($tempPermission['excluded_ids'], $ids['excluded_ids']));
         }
