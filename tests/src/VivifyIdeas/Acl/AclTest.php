@@ -229,21 +229,21 @@ class AclTest extends Orchestra\Testbench\TestCase
      */
     public function testGetUserIds()
     {
-        $this->assertEquals(array(4), Acl::permission('EDIT_PRODUCT')->getUserIds());
+        $this->assertEquals(array(4, 1986), Acl::permission('EDIT_PRODUCT')->getUserIds());
 
-        $this->assertEquals(array(1, 3, 4, 6), Acl::permission('EDIT_PRODUCT', 2)->getUserIds());
+        $this->assertEquals(array(1, 3, 4, 6, 1986), Acl::permission('EDIT_PRODUCT', 2)->getUserIds());
 
-        $this->assertEquals(array(1, 4), Acl::permission('EDIT_PRODUCT', 3)->getUserIds());
+        $this->assertEquals(array(1, 4, 1986), Acl::permission('EDIT_PRODUCT', 3)->getUserIds());
 
-        $this->assertEquals(array(1, 4), Acl::permission('EDIT_PRODUCT', 4)->getUserIds());
+        $this->assertEquals(array(1, 4, 1986), Acl::permission('EDIT_PRODUCT', 4)->getUserIds());
 
-        $this->assertEquals(array(2, 3, 4), Acl::permission('EDIT_PRODUCT', 5)->getUserIds());
+        $this->assertEquals(array(2, 3, 4, 1986), Acl::permission('EDIT_PRODUCT', 5)->getUserIds());
 
-        $this->assertEquals(array(1), Acl::permission('VIEW_PRODUCT', 4)->getUserIds());
+        $this->assertEquals(array(1, 1986), Acl::permission('VIEW_PRODUCT', 4)->getUserIds());
 
-        $this->assertEquals(array(1, 3, 4), Acl::permission('VIEW_PRODUCT', 4)->permission('EDIT_PRODUCT', 5)->getUserIds());
+        $this->assertEquals(array(1, 3, 4, 1986), Acl::permission('VIEW_PRODUCT', 4)->permission('EDIT_PRODUCT', 5)->getUserIds());
 
-        $this->assertEquals(array(3, 4), Acl::permission('VIEW_PRODUCT', 44)->permission('EDIT_PRODUCT', 5)->getUserIds());
+        $this->assertEquals(array(3, 4, 1986), Acl::permission('VIEW_PRODUCT', 44)->permission('EDIT_PRODUCT', 5)->getUserIds());
     }
 
     /**

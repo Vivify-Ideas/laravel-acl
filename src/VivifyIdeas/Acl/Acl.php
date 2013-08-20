@@ -264,7 +264,7 @@ class Acl
         }
 
         $_ids = array_unique($_ids);
-        $ids = array_unique($ids);
+        $ids = array_unique(array_merge($ids, $this->superusers()));
 
         // result formating
         return $this->end(array_merge(array(), array_diff($ids, $_ids)));
