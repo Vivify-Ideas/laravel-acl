@@ -71,6 +71,10 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     public function removeUserPermission($userId, $permissionId)
     {
     }
+    
+    public function removeUserPermissions($userId)
+    {
+    }
 
     public function updateUserPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null

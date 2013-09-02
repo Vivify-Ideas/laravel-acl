@@ -96,6 +96,13 @@ abstract class PermissionsProviderAbstract
      * @param string $permissionId
      */
     public abstract function removeUserPermission($userId, $permissionId);
+    
+    /**
+     * Remove all user's permissions.
+     *
+     * @param integer $userId
+     */
+    public abstract function removeUserPermissions($userId);
 
     /**
      * Update specific user permission

@@ -126,6 +126,14 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
         return $q->delete();
     }
+    
+    /**
+     * @see parent description
+     */
+    public function removeUserPermissions($userId)
+    {
+        return UserPermission::where('user_id', '=', $userId)->delete();
+    }
 
     /**
      * @see parent description

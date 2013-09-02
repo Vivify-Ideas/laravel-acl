@@ -263,9 +263,19 @@ class Manager
      * @param integer $userId
      * @param string $permissionId
      */
-    public function removeUserPermission($userId = null, $permissionId)
+    public function removeUserPermission($userId, $permissionId)
     {
         return $this->provider->removeUserPermission($userId, $permissionId);
+    }
+    
+    /**
+     * Remove all user's permissions
+     *
+     * @param integer $userId
+     */
+    public function removeUserPermissions($userId)
+    {
+        return $this->provider->removeUserPermissions($userId);
     }
 
     /**
