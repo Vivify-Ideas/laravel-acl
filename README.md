@@ -34,7 +34,7 @@ Next, update Composer from the Terminal:
 Once this operation completes, you will need to add the service provider into your app. Open `app/config/app.php`, and add a new item to the providers array.
 
 ```
-  'VivifyIdeas\Acl\AclServiceProvider
+  'VivifyIdeas\Acl\AclServiceProvider',
 ```
 
 And also add new alias into aliases array.
@@ -49,7 +49,7 @@ Last step is to create main structure for keeping ACL. You can easy done this by
 php artisan acl:install
 ```
 
-This will use current permission provider (`Eloquent`) and create DB structure for saving permissions. It will create 2 additional tables `acl_permissions` and `acl_user_permissions`.
+This will use current permission provider (`Eloquent`) and create DB structure for saving permissions. When finished, you should have four new database tables in your system `acl_permissions`, `acl_user_permissions`, `acl_groups` and `acl_roles`.
 
 That's it! You're all set to go.
 
@@ -57,7 +57,7 @@ That's it! You're all set to go.
 
 After runing `artisan acl:install` command, you will get a new config file in `app/config/packages/vivify-ideas/acl/config.php`.
 
-There you will notice 5 sections.
+There you will notice several different sections.
 
 ### Provider
 
@@ -83,13 +83,18 @@ Here you can define user IDs that will have superuser rights. This users will be
 
 Put here ID that will used for setting permissions to guest users.
 
+```php
+'userstable' => 'users'
+```
+This is the name of the table where users are stored. The default value is `users`, which should work out of the box. If you've named your users table differently enter the name here. (This is required for user roles)
+
 ### Permissions
 
 ```php
 'permissions' => array()
 ```
 
-Here you need to put all permissions that exist in your system. Permissions need to be in next format
+Here you need to put all permissions that exist in your system. Any resource that is not definied here will be freely accessable by any authenticated user. Permissions need to be in following format:
 
 ```php
 array(
@@ -117,7 +122,7 @@ array(
 'groups' => array()
 ```
 
-Every permission can belong to some group. You can have groups that belongs to other group. Every group can have a route. Use next format:
+Every permission can belong to some group. You can have groups that belongs to other group. Every group can have a route. Use the following format:
 
 ```php
 array(
@@ -158,16 +163,22 @@ array(
   )
 )
 ```
+### Roles
+
+```php
+'roles' => array()
+```
+Roles are set of permissions that can be assigned to different users. Roles can have parent role and children roles that inherit their permissions.To use the roles you'll need to add another field to your users table named `roles`. There you can store user's roles as a comma separated list e.g. `'EDITOR,TRANSLATOR'`.
 
 ## Usage
 
-When you are satisfy how your configuration file look like, run next artisan command:
+When you are satisfied with your configuration file, run the following artisan command:
 
 ```
 php artisan acl:update
 ```
 
-This command you need to run every time when you update config file with new permissions.
+This command needs to be run every time when you update config file with new permissions.
 
 If you want to delete all permissions (including user permissions), and again reload permissions from config file you can use this command:
 
@@ -188,7 +199,7 @@ Here is the list of all artisan commands:
 
 Now we need to add appropriate filter to application and to set usage in `routes.php` file.
 
-You can add this filter to your `filters.php` file and adjust it by your own needs:
+You can add this filter to your `filters.php` file and adjust it tu suit your own needs:
 
 ```php
 Route::filter('acl', function($route, $request)
@@ -202,7 +213,7 @@ Route::filter('acl', function($route, $request)
 });
 ```
 
-And then in `routes.php` use this filter according to your needs
+And then in `routes.php` use this filter according to your needs.
 
 ```php
 Route::group(array('before' => 'acl', 'prefix' => '/admin'), function()

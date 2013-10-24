@@ -22,7 +22,7 @@ class Manager
     }
 
     /**
-     * Get user permissions (together with system permissions)
+     * Get user permissions (together with system permissions and permissions based on roles)
      *
      * @param integer $userId
      *
@@ -496,6 +496,6 @@ class Manager
      */
     public function getUserRoles($userId)
     {
-        $userRoles = $this->provider->getUserRoles($userId);
+        return $this->provider->getUserRoles($userId);
     }
 }

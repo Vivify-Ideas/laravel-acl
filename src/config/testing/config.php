@@ -8,6 +8,8 @@ return array(
 
     'guestuser' => 0,
 
+    'userstable' => 'users',
+
     'permissions' => array(
         array(
             'id' => 'EDIT_PRODUCT',
@@ -123,6 +125,22 @@ return array(
             )
         )
 
-    )
+    ),
+
+    'roles' => array(
+            array(
+                    'id' => 'ADMIN',
+                    'name' => 'Admin',
+                    'permission_ids' => array('ALL'),
+
+                    'children' => array(
+                            array(
+                                    'id' => 'MODERATOR',
+                                    'name' => 'Moderator',
+                                    'permission_ids' => array('VIEW_USER', 'EDIT_USER', 'EDIT_USER', 'DELETE_USER'),
+                            )
+                    )
+            )
+    ),
 
 );

@@ -6,6 +6,9 @@ use VivifyIdeas\Acl\Models\UserPermission;
 use VivifyIdeas\Acl\Models\Permission;
 use VivifyIdeas\Acl\Models\Group;
 use VivifyIdeas\Acl\Models\Role;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Schema;
 
 /**
  * Default Eloquent permission provider.
