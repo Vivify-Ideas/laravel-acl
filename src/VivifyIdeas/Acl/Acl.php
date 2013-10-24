@@ -109,6 +109,24 @@ class Acl
         return $this->manager->getUserPermissions($this->userId);
     }
 
+    /**
+     * Get current user roles (linear structure)
+     *
+     * @return array
+     */
+    public function getUserRoles()
+    {
+        if (!$this->userId) {
+            // if user id is not set, try to get authenticated user
+            $this->currentUser();
+        }
+
+        if ($this->userId) {
+            return $this->manager->getUserRoles($this->userId);
+        }
+
+        return array();
+    }
 
     /**
      * Check if user have permission to access specifed route.
@@ -271,7 +289,7 @@ class Acl
     }
 
     /**
-     * Checking does user have setuped permissions.
+     * Check if user has permission.
      *
      * @return boolean
      */
@@ -339,7 +357,7 @@ class Acl
     }
 
     /**
-     * Check if current user have permission to access specific group.
+     * Check if current user has permission to access specific group.
      *
      * @param string $id
      *
@@ -389,7 +407,7 @@ class Acl
     }
 
     /**
-     * Throw exception and make additional work.
+     * Clean up then throw and exception.
      *
      * @param string $message
      */

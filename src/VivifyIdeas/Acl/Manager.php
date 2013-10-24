@@ -160,6 +160,43 @@ class Manager
     }
 
     /**
+     * Reload roles from config file into DB
+     *
+     * @param string $parentRole
+     * @param array $roles
+     *
+     * @return type
+     */
+    public function reloadRoles($parentRole = null, $roles = null)
+    {
+        if (empty($roles)) {
+            $roles = Config::get('acl::roles');
+        }
+
+        if ($parentRole === null) {
+            $this->deleteAllRoles();
+        }
+
+        $newRoles = array();
+
+        foreach ($roles as $role) {
+            if (empty($role['children'])) {
+                $newRoles[$role['id']] = $parentRole;
+                $this->insertRole($role['id'], $role['name'], @$role['permission_ids'], $parentRole);
+            } else {
+                $newRoles[$role['id']] = $parentRole;
+                $this->insertRole($role['id'], $role['name'], @$role['permission_ids'], $parentRole);
+                $newRoles = array_merge(
+                        $newRoles,
+                        $this->reloadRoles($role['id'], $role['children'])
+                );
+            }
+        }
+
+        return $newRoles;
+    }
+
+    /**
      * Insert new group with specific provider
      *
      * @param string $id
@@ -175,11 +212,34 @@ class Manager
     }
 
     /**
+     * Insert new role with specific provider
+     *
+     * @param string $id
+     * @param string $name
+     * @param array|string $permissionIds
+     * @param type $parentId
+     *
+     * @return type
+     */
+    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    {
+        return $this->provider->insertRole($id, $name, $permissionIds, $parentId);
+    }
+
+    /**
      * Delete all groups using provider.
      */
     public function deleteAllGroups()
     {
         return $this->provider->deleteAllGroups();
+    }
+
+    /**
+     * Delete all groups using provider.
+     */
+    public function deleteAllRoles()
+    {
+        return $this->provider->deleteAllRoles();
     }
 
     /**
@@ -267,7 +327,7 @@ class Manager
     {
         return $this->provider->removeUserPermission($userId, $permissionId);
     }
-    
+
     /**
      * Remove all user's permissions
      *
@@ -427,4 +487,15 @@ class Manager
         return $childs;
     }
 
+    /**
+     * Get user roles
+     *
+     * @param integer $userId
+     *
+     * @return array
+     */
+    public function getUserRoles($userId)
+    {
+        $userRoles = $this->provider->getUserRoles($userId);
+    }
 }

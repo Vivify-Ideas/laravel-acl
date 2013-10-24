@@ -35,6 +35,8 @@ class ResetCommand extends Command
 
 		\Acl::reloadGroups();
 
+		\Acl::reloadRoles();
+
 		$this->info('ACL permissions successful reseted!');
 	}
 

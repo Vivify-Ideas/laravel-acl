@@ -35,6 +35,8 @@ class UpdateCommand extends Command
 
 		\Acl::reloadGroups();
 
+		\Acl::reloadRoles();
+
 		$this->info('ACL permissions successful updated!');
 	}
 

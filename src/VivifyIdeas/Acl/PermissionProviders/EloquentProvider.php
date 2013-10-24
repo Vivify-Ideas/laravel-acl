@@ -5,6 +5,7 @@ namespace VivifyIdeas\Acl\PermissionProviders;
 use VivifyIdeas\Acl\Models\UserPermission;
 use VivifyIdeas\Acl\Models\Permission;
 use VivifyIdeas\Acl\Models\Group;
+use VivifyIdeas\Acl\Models\Role;
 
 /**
  * Default Eloquent permission provider.
@@ -126,7 +127,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
         return $q->delete();
     }
-    
+
     /**
      * @see parent description
      */
@@ -187,6 +188,14 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     /**
      * @see parent description
      */
+    public function getRolePermissionIds($roleId)
+    {
+        return explode(',', Role::where('id', '=', $roleId)->pluck('permission_ids'));
+    }
+
+    /**
+     * @see parent description
+     */
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
         return Group::create(array(
@@ -200,9 +209,30 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     /**
      * @see parent description
      */
+    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    {
+        return Role::create(array(
+                'id' => $id,
+                'name' => $name,
+                'permission_ids' => is_array($permissionIds)? implode(',', $permissionIds) : $permissionIds,
+                'parent_id' => $parentId
+        ))->toArray();
+    }
+
+    /**
+     * @see parent description
+     */
     public function deleteAllGroups()
     {
         return Group::truncate();
+    }
+
+    /**
+     * @see parent description
+     */
+    public function deleteAllRoles()
+    {
+        return Role::truncate();
     }
 
     /**
@@ -229,6 +259,28 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         }
 
         return null;
+    }
+
+    /**
+     * @see parent description
+     */
+    public function getUserRoles($userId)
+    {
+        $usersTable = Config::get('acl::userstable');
+
+        $usersTable ? : $usersTable = 'users';
+
+        if (Schema::hasTable($usersTable)) {
+            if (Schema::hasColumn($usersTable, 'roles')) {
+                $userRoles = DB::table($usersTable)->where('id', $userId)->pluck('roles');
+            }
+        }
+
+        if($userRoles) {
+            return explode(',', $userRoles);
+        }
+
+        return array();
     }
 
 }

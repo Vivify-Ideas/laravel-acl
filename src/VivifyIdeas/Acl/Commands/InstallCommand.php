@@ -64,13 +64,18 @@ class InstallCommand extends Command
 			if (Schema::hasTable('acl_groups')) {
 				Schema::drop('acl_groups');
 			}
+
+			if (Schema::hasTable('acl_roles')) {
+			    Schema::drop('acl_roles');
+			}
 		} elseif (!file_exists(app_path() . '/config/packages/vivify-ideas/acl/config.php')) {
 			$this->createConfig();
 		}
 
 		if (Schema::hasTable('acl_permissions') &&
 			Schema::hasTable('acl_users_permissions') &&
-			Schema::hasTable('acl_groups')) {
+			Schema::hasTable('acl_groups') &&
+			Schema::hasTable('acl_roles')){
 			// you already installed ACL
 			$this->error('You already installed ACL.');
 			return;
@@ -105,6 +110,15 @@ class InstallCommand extends Command
 				$table->string('route')->nullable();
 				$table->string('parent_id')->index()->nullable();
 			});
+		}
+
+		if (!Schema::hasTable('acl_roles')) {
+		    Schema::create('acl_roles', function(Blueprint $table) {
+		        $table->string('id')->primary();
+		        $table->string('name');
+		        $table->string('permission_ids')->nullable();
+		        $table->string('parent_id')->index()->nullable();
+		    });
 		}
 
 		$this->info('ACL installed successful!');

@@ -71,7 +71,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     public function removeUserPermission($userId, $permissionId)
     {
     }
-    
+
     public function removeUserPermissions($userId)
     {
     }
@@ -144,13 +144,32 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             ),
         );
     }
+    public function getRolePermissionIds($roleId)
+    {
+        return explode(',', 'VIEW_USER,EDIT_USER,EDIT_USER,DELETE_USER');
+    }
+
+    public function getUserRoles($userId)
+    {
+        return explode(',', 'EDITOR,TRANSLATOR');
+    }
 
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
 
     }
 
+    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    {
+
+    }
+
     public function deleteAllGroups()
+    {
+
+    }
+
+    public function deleteAllRoles()
     {
 
     }

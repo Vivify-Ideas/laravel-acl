@@ -96,7 +96,7 @@ abstract class PermissionsProviderAbstract
      * @param string $permissionId
      */
     public abstract function removeUserPermission($userId, $permissionId);
-    
+
     /**
      * Remove all user's permissions.
      *
@@ -123,6 +123,15 @@ abstract class PermissionsProviderAbstract
     public abstract function getGroups();
 
     /**
+     * Get role permission ids
+     *
+     * @param string $roleId
+     *
+     * @return array
+     */
+    public abstract function getRolePermissionIds($roleId);
+
+    /**
      * Insert new group
      *
      * @param string $id
@@ -135,9 +144,26 @@ abstract class PermissionsProviderAbstract
     public abstract function insertGroup($id, $name, $route = null, $parentId = null);
 
     /**
+     * Insert new role
+     *
+     * @param string $id
+     * @param string $name
+     * @param array|string $permissionIds
+     * @param type $parentId
+     *
+     * @return type
+     */
+    public abstract function insertRole($id, $name, $permissionIds, $parentId = null);
+
+    /**
      * Delete all groups.
      */
     public abstract function deleteAllGroups();
+
+    /**
+     * Delete all roles.
+     */
+    public abstract function deleteAllRoles();
 
     /**
      * Get specific user permission
@@ -148,5 +174,14 @@ abstract class PermissionsProviderAbstract
      * @return array
      */
     public abstract function getUserPermission($userId, $permissionId);
+
+    /**
+     * Get user roles
+     *
+     * @param integer $userId
+     *
+     * @return array
+     */
+    public abstract function getUserRoles($userId);
 
 }
