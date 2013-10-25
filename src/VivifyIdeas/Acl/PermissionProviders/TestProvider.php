@@ -159,7 +159,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     }
 
-    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    public function insertRole($id, $name, $parentId = null)
     {
 
     }
