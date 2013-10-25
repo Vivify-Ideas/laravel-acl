@@ -43,13 +43,13 @@ And also add new alias into aliases array.
   'Acl' => 'VivifyIdeas\Acl\Facades\Acl',
 ```
 
-Last step is to create main structure for keeping ACL. You can easy done this by running `artisan` command:
+The last step is to create database structure for keeping ACL. You can do this easily by running the following `artisan` command:
 
 ```
 php artisan acl:install
 ```
 
-This will use current permission provider (`Eloquent`) and create DB structure for saving permissions. When finished, you should have four new database tables in your system `acl_permissions`, `acl_user_permissions`, `acl_groups` and `acl_roles`.
+This will use current permission provider (`Eloquent`) to create necessary DB structure. When finished, you should have six new tables in your database: `acl_permissions`, `acl_groups`, `acl_user_permissions`, `acl_roles`, `acl_roles_permissions` and `acl_users_roles`.
 
 That's it! You're all set to go.
 
@@ -57,7 +57,7 @@ That's it! You're all set to go.
 
 After runing `artisan acl:install` command, you will get a new config file in `app/config/packages/vivify-ideas/acl/config.php`.
 
-There you will notice several different sections.
+There you will notice several different settings.
 
 ### Provider
 
@@ -65,7 +65,7 @@ There you will notice several different sections.
 'provider' => 'eloquent'
 ```
 
-Main feature of this ACL component is `PermissionsProvider`. Permission provider represent class that handle permissions. Currently there is only one permission provider `Eloquent` (you can assume that permissions will be stored in DB that you specified on your project).
+Here you can set the provider class that you want to use. Main feature of this ACL component is `PermissionsProvider`, which abstract storage of permissions. Currently `Eloquent` is the only one permission provider available (you can assume that permissions will be stored in DB that you specified on your project).
 
 ### SuperUsers
 
@@ -73,7 +73,7 @@ Main feature of this ACL component is `PermissionsProvider`. Permission provider
 'superusers' => array()
 ```
 
-Here you can define user IDs that will have superuser rights. This users will be able allowed all permissions.
+Here you can define user IDs that will have superuser rights. These users will be allowed all permissions.
 
 ### GuestUser
 
@@ -83,18 +83,13 @@ Here you can define user IDs that will have superuser rights. This users will be
 
 Put here ID that will used for setting permissions to guest users.
 
-```php
-'userstable' => 'users'
-```
-This is the name of the table where users are stored. The default value is `users`, which should work out of the box. If you've named your users table differently enter the name here. (This is required for user roles)
-
 ### Permissions
 
 ```php
 'permissions' => array()
 ```
 
-Here you need to put all permissions that exist in your system. Any resource that is not definied here will be freely accessable by any authenticated user. Permissions need to be in following format:
+Here you need to put permissions for every resource that will be protected by ACL. Any resource that is not definied here or has its `allowed` field set to `true` will be freely accessable by any authenticated user or possibly a guest. Permissions need to be in following format:
 
 ```php
 array(
@@ -121,8 +116,8 @@ array(
 ```php
 'groups' => array()
 ```
-
-Every permission can belong to some group. You can have groups that belongs to other group. Every group can have a route. Use the following format:
+The purpose of groups is to limit access to groups of resources that share the same base path. For example you want to alllow user to access the page at `admin/products` path
+Every permission can belong to a group. You can have groups that belongs to other group. Every group can have a route. Use the following format:
 
 ```php
 array(
@@ -168,7 +163,8 @@ array(
 ```php
 'roles' => array()
 ```
-Roles are sets of permissions that can be assigned to different users. Roles can have parent role and children roles that inherit their permissions.
+Roles are sets of permissions that can be assigned to different users. <!--- Roles can have parent role and children roles that inherit their permissions. (not yet implemented) -->
+Permissions based on roles are applied after general permissions, but before user specific permissions. This means that you can override role based permissions with user specific permissions.
 
 ## Usage
 
@@ -178,7 +174,7 @@ When you are satisfied with your configuration file, run the following artisan c
 php artisan acl:update
 ```
 
-This command needs to be run every time when you update config file with new permissions.
+This command needs to be run every time you update config file with new permissions and wish to add them to the database.
 
 If you want to delete all permissions (including user permissions), and again reload permissions from config file you can use this command:
 
@@ -190,9 +186,9 @@ php artisan acl:reset
 
 Here is the list of all artisan commands:
 
-- ```acl:install``` Create basic ACL table structure.
-- ```acl:install clean``` Delete all acl tables, reset config file to default version and again create basic ACL table structure.
-- ```acl:update``` Update all ACL permissions from config file.
+- ```acl:install``` Create ACL table structure.
+- ```acl:install clean``` Delete all acl tables, reset config file to default version and again create ACL table structure.
+- ```acl:update``` Update all ACL permissions in the database from config file.
 - ```acl:reset``` Reset all ACL permissions. This will delete both user and system permissions and install permissions from config file
 
 ### Add Acl Filter To Your Application

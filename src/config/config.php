@@ -267,15 +267,12 @@ return array(
             array(
                 'id' => 'ADMIN',
                 'name' => 'Admin',
-
-                'children' => array(
-                        array(
-                                'id' => 'MODERATOR',
-                                'name' => 'Moderator',
-                        )
-                )
+            ),
+            array(
+                'id' => 'MODERATOR',
+                'name' => 'Moderator',
             )
-        ),
+       ),
    */
     'roles' => array(),
 
