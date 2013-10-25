@@ -6,9 +6,8 @@ use VivifyIdeas\Acl\Models\UserPermission;
 use VivifyIdeas\Acl\Models\Permission;
 use VivifyIdeas\Acl\Models\Group;
 use VivifyIdeas\Acl\Models\Role;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Schema;
+use VivifyIdeas\Acl\Models\RolePermission;
+use VivifyIdeas\Acl\Models\UserRole;
 
 /**
  * Default Eloquent permission provider.
@@ -193,7 +192,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function getRolePermissionIds($roleId)
     {
-        return explode(',', Role::where('id', '=', $roleId)->pluck('permission_ids'));
+        return RolePermission::where('role_id', '=', $roleId)->lists('id');
     }
 
     /**
@@ -212,12 +211,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     /**
      * @see parent description
      */
-    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    public function insertRole($id, $name, $parentId = null)
     {
         return Role::create(array(
                 'id' => $id,
                 'name' => $name,
-                'permission_ids' => is_array($permissionIds)? implode(',', $permissionIds) : $permissionIds,
                 'parent_id' => $parentId
         ))->toArray();
     }
@@ -269,21 +267,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function getUserRoles($userId)
     {
-        $usersTable = Config::get('acl::userstable');
-
-        $usersTable ? : $usersTable = 'users';
-
-        if (Schema::hasTable($usersTable)) {
-            if (Schema::hasColumn($usersTable, 'roles')) {
-                $userRoles = DB::table($usersTable)->where('id', $userId)->pluck('roles');
-            }
-        }
-
-        if($userRoles) {
-            return explode(',', $userRoles);
-        }
-
-        return array();
+        return UserRole::where('user_id', $userId)->lists('role_id');
     }
 
 }

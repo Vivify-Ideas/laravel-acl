@@ -182,10 +182,10 @@ class Manager
         foreach ($roles as $role) {
             if (empty($role['children'])) {
                 $newRoles[$role['id']] = $parentRole;
-                $this->insertRole($role['id'], $role['name'], @$role['permission_ids'], $parentRole);
+                $this->insertRole($role['id'], $role['name'], $parentRole);
             } else {
                 $newRoles[$role['id']] = $parentRole;
-                $this->insertRole($role['id'], $role['name'], @$role['permission_ids'], $parentRole);
+                $this->insertRole($role['id'], $role['name'], $parentRole);
                 $newRoles = array_merge(
                         $newRoles,
                         $this->reloadRoles($role['id'], $role['children'])
@@ -221,9 +221,9 @@ class Manager
      *
      * @return type
      */
-    public function insertRole($id, $name, $permissionIds, $parentId = null)
+    public function insertRole($id, $name, $parentId = null)
     {
-        return $this->provider->insertRole($id, $name, $permissionIds, $parentId);
+        return $this->provider->insertRole($id, $name, $parentId);
     }
 
     /**
@@ -235,7 +235,7 @@ class Manager
     }
 
     /**
-     * Delete all groups using provider.
+     * Delete all roles using provider.
      */
     public function deleteAllRoles()
     {

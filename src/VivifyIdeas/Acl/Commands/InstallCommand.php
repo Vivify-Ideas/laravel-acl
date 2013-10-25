@@ -65,8 +65,15 @@ class InstallCommand extends Command
 				Schema::drop('acl_groups');
 			}
 
+			if (Schema::hasTable('acl_roles_permissions')) {
+			    Schema::drop('acl_roles_permissions');
+			}
+
 			if (Schema::hasTable('acl_roles')) {
 			    Schema::drop('acl_roles');
+			}
+			if (Schema::hasTable('acl_users_roles')) {
+			    Schema::drop('acl_users_roles');
 			}
 		} elseif (!file_exists(app_path() . '/config/packages/vivify-ideas/acl/config.php')) {
 			$this->createConfig();
@@ -112,12 +119,30 @@ class InstallCommand extends Command
 			});
 		}
 
+		if (!Schema::hasTable('acl_roles_permissions')) {
+		    Schema::create('acl_roles_permissions', function(Blueprint $table) {
+		        $table->increments('id');
+		        $table->string('permission_id')->index();
+		        $table->string('role_id')->index();
+		        $table->boolean('allowed')->nullable();
+		        $table->string('allowed_ids')->nullable();
+		        $table->string('excluded_ids')->nullable();
+		    });
+		}
+
 		if (!Schema::hasTable('acl_roles')) {
 		    Schema::create('acl_roles', function(Blueprint $table) {
 		        $table->string('id')->primary();
 		        $table->string('name');
-		        $table->string('permission_ids')->nullable();
 		        $table->string('parent_id')->index()->nullable();
+		    });
+		}
+
+		if (!Schema::hasTable('acl_users_roles')) {
+		    Schema::create('acl_users_roles', function(Blueprint $table) {
+		        $table->integer('id')->primary();
+		        $table->integer('user_id');
+		        $table->string('role_id');
 		    });
 		}
 

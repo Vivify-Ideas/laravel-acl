@@ -168,7 +168,7 @@ array(
 ```php
 'roles' => array()
 ```
-Roles are set of permissions that can be assigned to different users. Roles can have parent role and children roles that inherit their permissions.To use the roles you'll need to add another field to your users table named `roles`. There you can store user's roles as a comma separated list e.g. `'EDITOR,TRANSLATOR'`.
+Roles are sets of permissions that can be assigned to different users. Roles can have parent role and children roles that inherit their permissions.
 
 ## Usage
 
@@ -199,7 +199,7 @@ Here is the list of all artisan commands:
 
 Now we need to add appropriate filter to application and to set usage in `routes.php` file.
 
-You can add this filter to your `filters.php` file and adjust it tu suit your own needs:
+You can add this filter to your `filters.php` file and adjust it to suit your own needs:
 
 ```php
 Route::filter('acl', function($route, $request)

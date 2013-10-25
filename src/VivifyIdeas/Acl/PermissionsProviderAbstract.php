@@ -153,7 +153,7 @@ abstract class PermissionsProviderAbstract
      *
      * @return type
      */
-    public abstract function insertRole($id, $name, $permissionIds, $parentId = null);
+    public abstract function insertRole($id, $name, $parentId = null);
 
     /**
      * Delete all groups.
