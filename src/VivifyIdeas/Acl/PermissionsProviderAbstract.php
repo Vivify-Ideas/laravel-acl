@@ -30,6 +30,44 @@ abstract class PermissionsProviderAbstract
     public abstract function getUserPermissions($userId);
 
     /**
+     * Gets all permissions a role has.
+     * Needs to return array of role permissions with following structure:
+     *
+     * array(
+     *  array(
+     *      'id' => 'PERMISSION_ID',
+     *      'allowed' => null|true|false,
+     *      'allowed_ids' => null|2|array(1,2,3),
+     *      'excluded_ids' => null|2|array(1,2,3)
+     *  ),...
+     * )
+     *
+     * @param string $roleId
+     *
+     * @return array
+     */
+    public abstract function getRolePermissions($roleId);
+
+    /**
+     * Gets all permissions user has based on assigned roles
+     * Needs to return array of role permissions with following structure:
+     *
+     * array(
+     *  array(
+     *      'id' => 'PERMISSION_ID',
+     *      'allowed' => null|true|false,
+     *      'allowed_ids' => null|2|array(1,2,3),
+     *      'excluded_ids' => null|2|array(1,2,3)
+     *  ),...
+     * )
+     *
+     * @param string $userId
+     *
+     * @return array
+     */
+    public abstract function getUserPermissionsBasedOnRoles($userId);
+
+    /**
      * Needs to return array of all system permissions with following structure:
      *
      * array(
@@ -121,15 +159,6 @@ abstract class PermissionsProviderAbstract
      * List all groups (linear structure)
      */
     public abstract function getGroups();
-
-    /**
-     * Get role permission ids
-     *
-     * @param string $roleId
-     *
-     * @return array
-     */
-    public abstract function getRolePermissionIds($roleId);
 
     /**
      * Insert new group

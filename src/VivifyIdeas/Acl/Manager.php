@@ -22,7 +22,7 @@ class Manager
     }
 
     /**
-     * Get user permissions (together with system permissions and permissions based on roles)
+     * Get user permissions (together with system permissions)
      *
      * @param integer $userId
      *
@@ -31,8 +31,12 @@ class Manager
     public function getUserPermissions($userId)
     {
         if (!isset($this->cached[$userId])) {
+
             // get user permissions
             $userPermissions = $this->provider->getUserPermissions($userId);
+
+            // get user permissions from user roles
+            $userPermissionsBasedOnRoles = $this->provider->getUserPermissionsBasedOnRoles($userId);
 
             $permissions = array();
 
@@ -45,7 +49,21 @@ class Manager
                 $permissions[$permission['id']] = $permission;
             }
 
-            // overwrite with user permissions
+            // overwrite system permissions with user permissions from roles
+            foreach ($userPermissionsBasedOnRoles as $userRolePermission) {
+                if (@$userRolePermission['allowed'] === null) {
+                    // allowed is not set, so use from system default
+                    unset($userRolePermission['allowed']);
+                }
+
+                $temp = $permissions[$userRolePermission['id']];
+
+                $temp = array_merge($temp, $userRolePermission);
+
+                $permissions[$userRolePermission['id']] = $temp;
+            }
+
+            // overwrite system permissions and user permissions from roles with user permissions
             foreach ($userPermissions as $userPermission) {
                 if (@$userPermission['allowed'] === null) {
                     // allowed is not set, so use from system default

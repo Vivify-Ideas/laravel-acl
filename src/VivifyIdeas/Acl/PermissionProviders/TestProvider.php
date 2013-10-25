@@ -50,6 +50,86 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         }
     }
 
+    public function getRolePermissions($roleId)
+    {
+        if ($roleId == 1) {
+            return array();
+        } else {
+            return array(
+                    array(
+                            'id' => 'EDIT_PRODUCT',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => null,
+                    ),
+                    array(
+                            'id' => 'VIEW_PRODUCT',
+                            'allowed' => false,
+                            'allowed_ids' => null,
+                            'excluded_ids' => null,
+                    ),
+                    array(
+                            'id' => 'EDIT_USER',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => array(9),
+                    ),
+                    array(
+                            'id' => 'VIEW_USER',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => array(9),
+                    ),
+                    array(
+                            'id' => 'LIST_ASSETS',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => null,
+                    ),
+            );
+        }
+    }
+
+    public function getUserPermissionsBasedOnRoles($userId)
+    {
+        if ($userId == 1) {
+            return array();
+        } else {
+            return array(
+                    array(
+                            'id' => 'EDIT_PRODUCT',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => null,
+                    ),
+                    array(
+                            'id' => 'VIEW_PRODUCT',
+                            'allowed' => false,
+                            'allowed_ids' => null,
+                            'excluded_ids' => null,
+                    ),
+                    array(
+                            'id' => 'EDIT_USER',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => array(9),
+                    ),
+                    array(
+                            'id' => 'VIEW_USER',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => array(9),
+                    ),
+                    array(
+                            'id' => 'LIST_ASSETS',
+                            'allowed' => null,
+                            'allowed_ids' => array(2,3,4),
+                            'excluded_ids' => null,
+                    ),
+            );
+        }
+    }
+
     public function getAllPermissions()
     {
         return Config::get('acl::permissions');
@@ -143,10 +223,6 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 'parent_id' => 'SUPERADMIN_PRIVILEGES'
             ),
         );
-    }
-    public function getRolePermissionIds($roleId)
-    {
-        return explode(',', 'VIEW_USER,EDIT_USER,EDIT_USER,DELETE_USER');
     }
 
     public function getUserRoles($userId)

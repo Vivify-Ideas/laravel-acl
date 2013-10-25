@@ -22,13 +22,43 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
         $userPermissions = UserPermission::where('user_id', '=', $userId)->get()->toArray();
 
         foreach ($userPermissions as &$permission) {
-            $permission = $this->parseUserPermission($permission);
+            $permission = $this->parseUserOrRolePermission($permission);
         }
 
         return $userPermissions;
     }
 
-    private function parseUserPermission(array $permission)
+    /**
+     * @see parent description
+     */
+    public function getRolePermissions($roleId)
+    {
+        $rolePermissions = RolePermission::where('role_id', '=', $roleId)->get()->toArray();
+
+        foreach ($rolePermissions as &$permission) {
+            $permission = $this->parseUserOrRolePermission($permission);
+        }
+
+        return $rolePermissions;
+    }
+
+    /**
+     * @see parent description
+     */
+    public function getUserPermissionsBasedOnRoles($userId)
+    {
+        $userRolePermissions = UserRole::where('user_id', $userId)
+            ->leftJoin('acl_roles_permissions', 'acl_users_roles.role_id', '=', 'acl_roles_permissions.role_id')
+            ->get(array('acl_roles_permissions.*'))->toArray();
+
+        foreach ($userRolePermissions as &$permission) {
+            $permission = $this->parseUserOrRolePermission($permission);
+        }
+
+        return $userRolePermissions;
+    }
+
+    private function parseUserOrRolePermission(array $permission)
     {
         if (empty($permission)) {
             return $permission;
@@ -190,14 +220,6 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     /**
      * @see parent description
      */
-    public function getRolePermissionIds($roleId)
-    {
-        return RolePermission::where('role_id', '=', $roleId)->lists('id');
-    }
-
-    /**
-     * @see parent description
-     */
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
         return Group::create(array(
@@ -245,7 +267,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
             // if user is not specified then return all user permissions with specific permission_id
             $permissions = UserPermission::where('permission_id', '=', $permissionId)->get()->toArray();
             foreach ($permissions as &$permission) {
-                $permission = $this->parseUserPermission($permission);
+                $permission = $this->parseUserOrRolePermission($permission);
             }
 
             return $permissions;
@@ -255,7 +277,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                                 ->first();
 
             if ($permission) {
-                return $this->parseUserPermission($permission->toArray());
+                return $this->parseUserOrRolePermission($permission->toArray());
             }
         }
 

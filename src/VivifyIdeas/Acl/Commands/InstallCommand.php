@@ -140,7 +140,7 @@ class InstallCommand extends Command
 
 		if (!Schema::hasTable('acl_users_roles')) {
 		    Schema::create('acl_users_roles', function(Blueprint $table) {
-		        $table->integer('id')->primary();
+		        $table->increments('id');
 		        $table->integer('user_id');
 		        $table->string('role_id');
 		    });
