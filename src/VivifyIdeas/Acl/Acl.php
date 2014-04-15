@@ -142,6 +142,11 @@ class Acl
             return $this->end(true);
         }
 
+        $httpMethod = strtoupper($httpMethod);
+        if (!in_array($httpMethod, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
+            return false;
+        }
+
         $groups = (array) $this->manager->getGroups();
         $userPermissions = (array) $this->getUserPermissions();
 
