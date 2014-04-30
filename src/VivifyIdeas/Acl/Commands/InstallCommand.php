@@ -146,7 +146,7 @@ class InstallCommand extends Command
 		    });
 		}
 
-		$this->info('ACL installed successful!');
+		$this->info('ACL was installed successfully!');
 	}
 
 	private function createConfig()

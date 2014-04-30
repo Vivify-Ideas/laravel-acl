@@ -22,7 +22,7 @@ class ResetCommand extends Command
 	 *
 	 * @var string
 	 */
-	protected $description = 'Reset all ACL permissions. This will delete both user and system permissions and install permissions from config file';
+	protected $description = 'Reset all ACL permissions. This will delete both user and system permissions and install permissions from the config file';
 
 	/**
 	 * Execute the console command.
@@ -37,7 +37,7 @@ class ResetCommand extends Command
 
 		\Acl::reloadRoles();
 
-		$this->info('ACL permissions successful reseted!');
+		$this->info('ACL permissions successfully reseted!');
 	}
 
 }

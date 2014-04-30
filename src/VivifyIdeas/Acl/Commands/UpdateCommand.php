@@ -37,7 +37,7 @@ class UpdateCommand extends Command
 
 		\Acl::reloadRoles();
 
-		$this->info('ACL permissions successful updated!');
+		$this->info('ACL permissions successfully updated!');
 	}
 
 }
