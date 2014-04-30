@@ -3,6 +3,8 @@ Laravel ACL
 
 ACL component for Laravel 4.
 
+(As of `v1.0.0-RC6`, laravel-acl is no longer compatible with Laravel 4.0. For Laravel 4.0 use version `v1.0.0-RC5` or earlier versions)
+
 [![Build Status](https://travis-ci.org/Vivify-Ideas/laravel-acl.png?branch=master)](https://travis-ci.org/Vivify-Ideas/laravel-acl)
 
 - [Installation](#installation)
