@@ -14,6 +14,8 @@ use VivifyIdeas\Acl\Models\UserRole;
  */
 class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 {
+    protected $groups;
+
     /**
      * @see parent description
      */
@@ -204,6 +206,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function getGroups()
     {
+        if($this->groups) {
+
+            return $this->groups;
+        }
+
         $groups = Group::all()->toArray();
 
         foreach ($groups as &$group) {
@@ -213,6 +220,8 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
                 $group['route'] = $routes;
             }
         }
+
+        $this->groups = $groups;
 
         return $groups;
     }
