@@ -20,8 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/",
-            "VivifyIdeas\\Acl\\": "packages/vivify-ideas/acl/src/VivifyIdeas/Acl/"
+            "VivifyIdeas\\Acl\\": "src/VivifyIdeas/Acl/"
         }
     },
     "minimum-stability": "dev"

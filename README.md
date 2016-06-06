@@ -18,9 +18,8 @@ First you need to install this package through Composer. Edit your project's `co
 
 ```
   "require": {
-    "vivify-ideas/acl": "dev-master"
-  },
-  "minimum-stability" : "dev"
+    "vivify-ideas/acl": "dev-laravel-5"
+  }
 ```
 
 Next, update Composer from the Terminal:
