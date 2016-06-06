@@ -1,11 +1,7 @@
 Laravel ACL
 ===========
 
-ACL component for Laravel 4.
-
-(As of `v1.0.0-RC6`, laravel-acl is no longer compatible with Laravel 4.0. For Laravel 4.0 use version `v1.0.0-RC5` or earlier versions)
-
-[![Build Status](https://travis-ci.org/Vivify-Ideas/laravel-acl.png?branch=master)](https://travis-ci.org/Vivify-Ideas/laravel-acl)
+ACL component for Laravel 5.
 
 - [Installation](#installation)
 - [Configuration](#configuration)
@@ -36,13 +32,13 @@ Next, update Composer from the Terminal:
 Once this operation completes, you will need to add the service provider into your app. Open `app/config/app.php`, and add a new item to the providers array.
 
 ```
-  'VivifyIdeas\Acl\AclServiceProvider',
+  VivifyIdeas\Acl\AclServiceProvider::class,
 ```
 
 And also add new alias into aliases array.
 
 ```
-  'Acl' => 'VivifyIdeas\Acl\Facades\Acl',
+  'Acl' => VivifyIdeas\Acl\Facades\Acl::class,
 ```
 
 The last step is to create database structure for keeping ACL. You can do this easily by running the following `artisan` command:
@@ -57,7 +53,7 @@ That's it! You're all set to go.
 
 ## Configuration
 
-After runing `artisan acl:install` command, you will get a new config file in `app/config/packages/vivify-ideas/acl/config.php`.
+After runing `artisan vendor:publish` command, you will get a new config file in `config/vivify-ideas/acl.php`.
 
 There you will notice several different settings.
 
@@ -204,7 +200,7 @@ Route::filter('acl', function($route, $request)
 {
     // we need this because laravel delete form sends POST request with {_method: 'DELETE'} as parameter
     $method = $request->has('_method') ? $request->input('_method') : $request->server('REQUEST_METHOD');
-    
+
     if (!Acl::checkRoute($method, $request->server('REQUEST_URI'))) {
          App::abort(403);
     }

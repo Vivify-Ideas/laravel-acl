@@ -49,7 +49,7 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     {
         $userRolePermissions = UserRole::where('user_id', $userId)
             ->leftJoin('acl_roles_permissions', 'acl_users_roles.role_id', '=', 'acl_roles_permissions.role_id')
-            ->get(array('acl_roles_permissions.*'))->toArray();
+            ->get([ 'acl_roles_permissions.*' ])->toArray();
 
         foreach ($userRolePermissions as &$permission) {
             $permission = $this->parseUserOrRolePermission($permission);
@@ -113,14 +113,14 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null)
     {
-        return Permission::create(array(
+        return Permission::create([
             'id' => $id,
             'allowed' => $allowed,
             'route' => is_array($route)? json_encode($route) : $route,
             'resource_id_required' => $resourceIdRequired,
             'name' => $name,
             'group_id' => $groupId
-        ))->toArray();
+        ])->toArray();
     }
 
     /**
@@ -137,13 +137,13 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     public function assignPermission(
         $userId, $permissionId, $allowed = null, array $allowedIds = null, array $excludedIds = null
     ) {
-        return UserPermission::create(array(
+        return UserPermission::create([
             'permission_id' => $permissionId,
             'user_id' => $userId,
             'allowed' => $allowed,
             'allowed_ids' => (!empty($allowedIds))? implode(',', $allowedIds) : null,
             'excluded_ids' => (!empty($excludedIds))? implode(',', $excludedIds) : null,
-        ))->toArray();
+        ])->toArray();
     }
 
     /**
@@ -176,11 +176,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
     ) {
         return UserPermission::where('user_id', '=', $userId)
                             ->where('permission_id', '=', $permissionId)
-                            ->update(array(
+                            ->update([
                                 'allowed' => $allowed,
                                 'allowed_ids' => (!empty($allowedIds))? implode(',', $allowedIds) : null,
                                 'excluded_ids' => (!empty($excludedIds))? implode(',', $excludedIds) : null,
-                            ));
+                            ]);
     }
 
     /**
@@ -222,12 +222,12 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function insertGroup($id, $name, $route = null, $parentId = null)
     {
-        return Group::create(array(
+        return Group::create([
             'id' => $id,
             'name' => $name,
             'route' => is_array($route)? json_encode($route) : $route,
             'parent_id' => $parentId
-        ))->toArray();
+        ])->toArray();
     }
 
     /**
@@ -235,11 +235,11 @@ class EloquentProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
      */
     public function insertRole($id, $name, $parentId = null)
     {
-        return Role::create(array(
-                'id' => $id,
-                'name' => $name,
-                'parent_id' => $parentId
-        ))->toArray();
+        return Role::create([
+            'id' => $id,
+            'name' => $name,
+            'parent_id' => $parentId
+        ])->toArray();
     }
 
     /**

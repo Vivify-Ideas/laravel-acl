@@ -7,88 +7,88 @@ use Illuminate\Support\Facades\Config;
 
 class AclServiceProvider extends ServiceProvider {
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('vivify-ideas/acl');
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__.'/../../config/config.php' => config_path('vivifyideas/acl.php'),
+        ]);
 
-		$provider = $this->getProviderClass();
+        $provider = $this->getProviderClass();
+        $this->app->bind('Acl', function() use ($provider) {
+            // default permissions providers is Eloquent provider
+            return new Acl(new $provider);
+        });
+    }
 
-		$this->app->bind('Acl', function() use ($provider) {
-		    // default permissions providers is Eloquent provider
-		    return new Acl(new $provider);
-		});
-	}
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerAclInstallCommand();
+        $this->registerAclResetCommand();
+        $this->registerAclUpdateCommand();
+    }
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		$this->registerAclInstallCommand();
-		$this->registerAclResetCommand();
-		$this->registerAclUpdateCommand();
+    private function getProviderClass()
+    {
+        $provider = config('vivifyideas.acl.provider');
 
-		$this->commands('acl.install', 'acl.reset', 'acl.update');
-	}
+        return 'VivifyIdeas\Acl\PermissionProviders\\' . ucfirst($provider) . 'Provider';
+    }
 
-	private function getProviderClass()
-	{
-		$provider = Config::get('acl::provider');
-		return 'VivifyIdeas\Acl\PermissionProviders\\' . ucfirst($provider) . 'Provider';
-	}
+    /**
+     * Register acl:install command
+     */
+    protected function registerAclInstallCommand()
+    {
+        $this->commands([
+            \VivifyIdeas\Acl\Commands\InstallCommand::class
+        ]);
+    }
 
-	/**
-	 * Register acl:install command
-	 */
-	protected function registerAclInstallCommand()
-	{
-	    $this->app['acl.install'] = $this->app->share(function($app) {
-	        return new Commands\InstallCommand();
-	    });
-	}
+    /**
+     * Register acl:reset command
+     */
+    protected function registerAclResetCommand()
+    {
+        $this->commands([
+            \VivifyIdeas\Acl\Commands\ResetCommand::class
+        ]);
+    }
 
-	/**
-	 * Register acl:reset command
-	 */
-	protected function registerAclResetCommand()
-	{
-	    $this->app['acl.reset'] = $this->app->share(function($app) {
-	        return new Commands\ResetCommand();
-	    });
-	}
+    /**
+     * Register acl:update command
+     */
+    protected function registerAclUpdateCommand()
+    {
+        $this->commands([
+            \VivifyIdeas\Acl\Commands\UpdateCommand::class
+        ]);
+    }
 
-	/**
-	 * Register acl:update command
-	 */
-	protected function registerAclUpdateCommand()
-	{
-	    $this->app['acl.update'] = $this->app->share(function($app) {
-	        return new Commands\UpdateCommand();
-	    });
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array();
-	}
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [];
+    }
 
 }

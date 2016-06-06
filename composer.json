@@ -1,9 +1,7 @@
 {
     "name": "vivify-ideas/acl",
+    "description": "ACL component for Laravel 5",
     "type": "library",
-    "description": "ACL component for Laravel 4",
-    "keywords": ["acl","laravel"],
-    "homepage": "http://vivify-ideas.github.io/laravel-acl",
     "license": "MIT",
     "authors": [
         {
@@ -17,12 +15,13 @@
         "orchestra/testbench": "2.1.*"
     },
     "require": {
-        "php": ">=5.3.0",
-        "illuminate/support": "4.1.x"
+        "php": ">=5.5.9",
+        "illuminate/support": "5.*"
     },
     "autoload": {
-        "psr-0": {
-            "VivifyIdeas\\Acl": "src/"
+        "psr-4": {
+            "App\\": "app/",
+            "VivifyIdeas\\Acl\\": "packages/vivify-ideas/acl/src/VivifyIdeas/Acl/"
         }
     },
     "minimum-stability": "dev"

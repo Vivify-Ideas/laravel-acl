@@ -132,7 +132,7 @@ class TestProvider extends \VivifyIdeas\Acl\PermissionsProviderAbstract
 
     public function getAllPermissions()
     {
-        return Config::get('acl::permissions');
+        return config('vivifyideas.acl.permissions');
     }
 
     public function createPermission($id, $allowed, $route, $resourceIdRequired, $name, $groupId = null)

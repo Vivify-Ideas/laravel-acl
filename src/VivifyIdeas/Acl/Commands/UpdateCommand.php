@@ -3,6 +3,7 @@
 namespace VivifyIdeas\Acl\Commands;
 
 use Illuminate\Console\Command;
+use VivifyIdeas\Acl\Facades\Acl;
 
 /**
  * Custom Artisan command for updating ACL permissions.
@@ -10,34 +11,34 @@ use Illuminate\Console\Command;
 class UpdateCommand extends Command
 {
 
-	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
-	protected $name = 'acl:update';
+    /**
+    * The console command name.
+    *
+    * @var string
+    */
+    protected $name = 'acl:update';
 
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = 'Update all ACL permissions from config file.';
+    /**
+    * The console command description.
+    *
+    * @var string
+    */
+    protected $description = 'Update all ACL permissions from config file.';
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return void
-	 */
-	public function fire()
-	{
-		\Acl::reloadPermissions(true);
+    /**
+    * Execute the console command.
+    *
+    * @return void
+    */
+    public function fire()
+    {
+        Acl::reloadPermissions(true);
 
-		\Acl::reloadGroups();
+        Acl::reloadGroups();
 
-		\Acl::reloadRoles();
+        Acl::reloadRoles();
 
-		$this->info('ACL permissions successfully updated!');
-	}
+        $this->info('ACL permissions successfully updated!');
+    }
 
 }

@@ -13,7 +13,7 @@ class Acl
 {
     private $manager;
     private $userId = null;
-    private $permissionsForChecking = array();
+    private $permissionsForChecking = [];
 
     public function __construct(PermissionsProviderAbstract $provider)
     {
@@ -42,7 +42,7 @@ class Acl
             $this->user(Auth::user()->id);
         } else {
             // guest user
-            $this->user(Config::get('acl::guestuser'));
+            $this->user(config('vivifyideas.acl.guestuser'));
         }
     }
 
@@ -81,7 +81,7 @@ class Acl
             $this->currentUser();
         }
 
-        return ($this->userId !== null &&  in_array($this->userId, Config::get('acl::superusers')));
+        return ($this->userId !== null &&  in_array($this->userId, config('vivifyideas.acl.superusers')));
     }
 
     /**
@@ -91,7 +91,7 @@ class Acl
      */
     public function superusers()
     {
-        return Config::get('acl::superusers');
+        return config('vivifyideas.acl.superusers');
     }
 
     /**
@@ -125,7 +125,7 @@ class Acl
             return $this->manager->getUserRoles($this->userId);
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -143,7 +143,7 @@ class Acl
         }
 
         $httpMethod = strtoupper($httpMethod);
-        if (!in_array($httpMethod, array('GET', 'POST', 'PUT', 'DELETE', 'PATCH'))) {
+        if (!in_array($httpMethod, [ 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' ])) {
             return false;
         }
 
@@ -156,7 +156,7 @@ class Acl
         foreach ($list as $item) {
             if (!empty($item['route'])) {
                 if (!is_array($item['route'])) {
-                    $item['route'] = array($item['route']);
+                    $item['route'] = [ $item['route'] ];
                 }
 
                 foreach ($item['route'] as $regExr) {
@@ -204,28 +204,28 @@ class Acl
      */
     public function getResourceIds()
     {
-        $ids = array(
+        $ids = [
             'allowed' => null,
-            'allowed_ids' => array(),
-            'excluded_ids' => array(),
-        );
+            'allowed_ids' => [],
+            'excluded_ids' => [],
+        ];
 
         if ($this->isSuperuser()) {
-            return $this->end( array(
+            return $this->end( [
                 'allowed' => true,
-                'allowed_ids' => array(),
-                'excluded_ids' => array(),
-            ));
+                'allowed_ids' => [],
+                'excluded_ids' => [],
+            ]);
         }
 
         $userPermissions = $this->getUserPermissions();
 
         foreach ($this->permissionsForChecking as $permission => $resourceIds) {
-            $tempPermission = array(
+            $tempPermission = [
                 'allowed' => $userPermissions[$permission]['allowed'],
-                'allowed_ids' => ($userPermissions[$permission]['allowed_ids'] === null)? array() : $userPermissions[$permission]['allowed_ids'],
-                'excluded_ids' => ($userPermissions[$permission]['excluded_ids'] === null)? array() : $userPermissions[$permission]['excluded_ids']
-            );
+                'allowed_ids' => ($userPermissions[$permission]['allowed_ids'] === null)? [] : $userPermissions[$permission]['allowed_ids'],
+                'excluded_ids' => ($userPermissions[$permission]['excluded_ids'] === null)? [] : $userPermissions[$permission]['excluded_ids']
+            ];
 
             $ids['allowed'] = ($ids['allowed'] === null)? $tempPermission['allowed'] : $ids['allowed'] || $tempPermission['allowed'];
             $ids['allowed_ids'] = array_unique(array_merge($tempPermission['allowed_ids'], $ids['allowed_ids']));
@@ -243,10 +243,10 @@ class Acl
     public function getUserIds()
     {
         // array of user ids that can access permission
-        $ids = array();
+        $ids = [];
 
         // array of user ids that can not access permission
-        $_ids = array();
+        $_ids = [];
 
         // system permissions
         $allPermissions = $this->manager->getAllPermissions();
@@ -290,7 +290,7 @@ class Acl
         $ids = array_unique(array_merge($ids, $this->superusers()));
 
         // result formating
-        return $this->end(array_merge(array(), array_diff($ids, $_ids)));
+        return $this->end(array_merge([], array_diff($ids, $_ids)));
     }
 
     /**
@@ -376,7 +376,7 @@ class Acl
 
         $exist = false;
 
-        $ids = array();
+        $ids = [];
         foreach ($this->manager->getChildGroups($id) as $group) {
             $ids[] = $group['id'];
         }
@@ -426,7 +426,7 @@ class Acl
      */
     private function clean()
     {
-        $this->permissionsForChecking = array();
+        $this->permissionsForChecking = [];
         $this->userId = null;
     }
 
@@ -469,7 +469,7 @@ class Acl
     public function __call($name, $arguments)
     {
         if (method_exists($this->manager, $name)) {
-            return call_user_func_array(array($this->manager, $name), $arguments);
+            return call_user_func_array([ $this->manager, $name ], $arguments);
         }
 
         $this->throwError('Method "'.$name.'" not exist neither in Acl nor in Acl Manager.');

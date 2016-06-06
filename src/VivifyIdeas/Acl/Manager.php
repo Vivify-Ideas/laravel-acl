@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Config;
 class Manager
 {
     private $provider;
-    private $allPermissions = array();
-    private $cached = array();
+    private $allPermissions = [];
+    private $cached = [];
 
     public function __construct(PermissionsProviderAbstract $provider)
     {
@@ -38,7 +38,7 @@ class Manager
             // get user permissions from user roles
             $userPermissionsBasedOnRoles = $this->provider->getUserPermissionsBasedOnRoles($userId);
 
-            $permissions = array();
+            $permissions = [];
 
             // get all permissions
             foreach ($this->allPermissions as $permission) {
@@ -93,8 +93,8 @@ class Manager
      */
     public function reloadPermissions($onlySystemPermissions = false)
     {
-        $permissions = Config::get('acl::permissions');
-        $forDelete = array();
+        $permissions = config('vivifyideas.acl.permissions');
+        $forDelete = [];
 
         if ($onlySystemPermissions) {
             // delete not existing permissions from users_permissions
@@ -151,14 +151,14 @@ class Manager
     public function reloadGroups($parentGroup = null, $groups = null)
     {
         if (empty($groups)) {
-            $groups = Config::get('acl::groups');
+            $groups = config('vivifyideas.acl.groups');
         }
 
         if ($parentGroup === null) {
             $this->deleteAllGroups();
         }
 
-        $newGroups = array();
+        $newGroups = [];
 
         foreach ($groups as $group) {
             if (empty($group['children'])) {
@@ -188,14 +188,14 @@ class Manager
     public function reloadRoles($parentRole = null, $roles = null)
     {
         if (empty($roles)) {
-            $roles = Config::get('acl::roles');
+            $roles = config('vivifyideas.acl.roles');
         }
 
         if ($parentRole === null) {
             $this->deleteAllRoles();
         }
 
-        $newRoles = array();
+        $newRoles = [];
 
         foreach ($roles as $role) {
             if (empty($role['children'])) {
@@ -429,7 +429,7 @@ class Manager
         if ($grouped === null) {
             $permissions = $this->provider->getAllPermissions();
 
-            $grouped = array();
+            $grouped = [];
             foreach ($permissions as $key => $permission) {
                 if (isset($permission['group_id'])) {
                     $grouped[$permission['group_id']][] = $permission;
@@ -439,7 +439,7 @@ class Manager
         }
 
         if ($groups === null) {
-            $groups = Config::get('acl::groups');
+            $groups = config('vivifyideas.acl.groups');
         }
 
         foreach ($groups as &$group) {
@@ -450,14 +450,14 @@ class Manager
 
                 if (!empty($grouped[$group['id']])) {
                     if (!isset($group['children'])) {
-                        $group['children'] = array();
+                        $group['children'] = [];
                     }
                     $group['children'] = array_merge($group['children'], $grouped[$group['id']]);
                 }
             } else {
                 if (!empty($grouped[$group['id']])) {
                     if (!isset($group['children'])) {
-                        $group['children'] = array();
+                        $group['children'] = [];
                     }
                     $group['children'] = array_merge($group['children'], $grouped[$group['id']]);
                 }
@@ -491,7 +491,7 @@ class Manager
     {
         $groups = $this->getGroups();
 
-        $childs = array();
+        $childs = [];
         foreach ($groups as $group) {
             if ($group['parent_id'] == $id || ($selfinclude && $group['id'] == $id)) {
                 $childs[$group['id']] = $group;

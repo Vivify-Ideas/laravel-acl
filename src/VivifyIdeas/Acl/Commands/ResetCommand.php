@@ -10,34 +10,34 @@ use Illuminate\Console\Command;
 class ResetCommand extends Command
 {
 
-	/**
-	 * The console command name.
-	 *
-	 * @var string
-	 */
-	protected $name = 'acl:reset';
+    /**
+    * The console command name.
+    *
+    * @var string
+    */
+    protected $name = 'acl:reset';
 
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = 'Reset all ACL permissions. This will delete both user and system permissions and install permissions from the config file';
+    /**
+    * The console command description.
+    *
+    * @var string
+    */
+    protected $description = 'Reset all ACL permissions. This will delete both user and system permissions and install permissions from the config file';
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return void
-	 */
-	public function fire()
-	{
-		\Acl::reloadPermissions();
+    /**
+    * Execute the console command.
+    *
+    * @return void
+    */
+    public function fire()
+    {
+        \Acl::reloadPermissions();
 
-		\Acl::reloadGroups();
+        \Acl::reloadGroups();
 
-		\Acl::reloadRoles();
+        \Acl::reloadRoles();
 
-		$this->info('ACL permissions successfully reseted!');
-	}
+        $this->info('ACL permissions successfully reseted!');
+    }
 
 }
