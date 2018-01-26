@@ -30,7 +30,7 @@ class UpdateCommand extends Command
     *
     * @return void
     */
-    public function fire()
+    public function handle()
     {
         Acl::reloadPermissions(true);
 

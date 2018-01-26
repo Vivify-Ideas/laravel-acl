@@ -46,7 +46,7 @@ class InstallCommand extends Command
     *
     * @return void
     */
-    public function fire()
+    public function handle()
     {
         if ($this->argument('clean')) {
             // remove tables if clean attr exist
