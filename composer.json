@@ -1,6 +1,6 @@
 {
     "name": "vivify-ideas/acl",
-    "description": "ACL component for Laravel 5",
+    "description": "ACL component for Laravel 6",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,12 +11,12 @@
         }
     ],
     "require-dev": {
-        "phpunit/phpunit": "3.7.*",
-        "orchestra/testbench": "2.1.*"
+        "phpunit/phpunit": "8.3.*",
+        "orchestra/testbench": "4.0.*"
     },
     "require": {
-        "php": ">=5.5.9",
-        "illuminate/support": "5.*"
+        "php": ">=7.2",
+        "illuminate/support": "6.*"
     },
     "autoload": {
         "psr-4": {
